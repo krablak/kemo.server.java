@@ -1,0 +1,131 @@
+apply plugin: 'css'
+apply plugin: "com.eriwen.gradle.js"
+apply plugin: "com.eriwen.gradle.css"
+
+// Directory path to development resources
+def resDir = "src/main/resources/web/static/dev/"
+// Directory path to production resources
+def resProdDir = "src/main/resources/web/static/prod/"
+
+// ---------------------------------
+// Helper common resources tasks
+// for static resources folders
+// structure preparation
+// ---------------------------------
+
+task buildFrontend(){
+	mustRunAfter processResources
+	dependsOn = [
+				"processResources",
+				"deleteProdResourcesTask",
+				"combineKemoJs",
+				"minifyKemoJs",
+				"combineAllJs",
+				"minifyNormalizeCss",
+				"combineKemoCss",
+				"minifyKemoCss",
+				"minifyMidnightThemeCss",
+				"combineAllWelcomeJs"
+				]
+}
+
+// Clean production static resources
+task deleteProdResourcesTask(type: Delete) {
+  delete = "${resProdDir}/"
+}
+
+// Welcome page scripts
+task combineCustomWelcomeJs(type: combineJs.class){
+	dependsOn = ['deleteProdResourcesTask']
+    source = [
+    		"${resDir}/js/kemo.core.js",
+    		"${resDir}/js/kemo.client.ext.js",
+    		"${resDir}/js/kemo.welcome_page.js"
+    		]
+    dest = file("${buildDir}/resources/combine/welcome.all.js")
+    include "*.js"
+}
+
+task minifyCustomWelcomeJs(type:minifyJs.class){
+	dependsOn = ['combineCustomWelcomeJs']
+	source = "${buildDir}/resources/combine/welcome.all.js"
+	dest = "${buildDir}/resources/min/welcome.all.min.js"
+    closure {
+    	compilationLevel = 'SIMPLE_OPTIMIZATIONS'
+        warningLevel = 'QUIET'
+    }
+}
+
+task combineAllWelcomeJs(type: combineJs.class){
+	dependsOn = ['minifyCustomWelcomeJs']
+    source = [
+    		"${resDir}/js/riot.min.js",
+    		"${buildDir}/resources/min/welcome.all.min.js"
+    		]
+    dest = file("${resProdDir}/js/welcome.all.min.js")
+    include "*.js"
+}
+
+// Chat page scripts
+task combineAllJs(type: combineJs.class){
+	dependsOn = ['deleteProdResourcesTask','minifyKemoJs']
+    source = [
+    		"${resDir}/js/SJCL.min.js",
+    		"${resDir}/js/riot.min.js",
+    		"${buildDir}/resources/min/kemo.all.min.js"
+    		]
+    dest = file("${resProdDir}/js/all.min.js")
+    include "*.js"
+}
+
+task minifyKemoJs(type:minifyJs.class){
+	dependsOn = ['combineKemoJs']
+	source = "${buildDir}/resources/combine/kemo.all.js"
+	dest = "${buildDir}/resources/min/kemo.all.min.js"
+    closure {
+    	compilationLevel = 'SIMPLE_OPTIMIZATIONS'
+        warningLevel = 'QUIET'
+    }
+}
+
+task combineKemoJs(type: combineJs.class){
+	dependsOn = ['deleteProdResourcesTask']
+    source = [
+    		"${resDir}/js/kemo.core.js",
+			"${resDir}/js/kemo.client.comm.js",
+			"${resDir}/js/kemo.client.view.js",
+			"${resDir}/js/kemo.client.ext.js",
+			"${resDir}/js/kemo.client.js",
+    		]
+    dest = "${buildDir}/resources/combine/kemo.all.js"
+    include "*.js"
+}
+
+// Page styles.
+task minifyNormalizeCss(type: minifyCss.class) {
+	shouldRunAfter deleteProdResourcesTask
+	source = "${resDir}/css/normalize.css"
+    dest = file("${resProdDir}/css/normalize.min.css")
+}
+
+task combineKemoCss(type: combineCss.class){
+	dependsOn = ['deleteProdResourcesTask']
+    source = [
+    		"${resDir}/css/skeleton.css",
+			"${resDir}/css/custom.css"
+    		]
+    dest = "${buildDir}/resources/combine/kemo.all.css"
+    include "*.css"
+}
+
+task minifyKemoCss(type: minifyCss.class) {
+	dependsOn = ['combineKemoCss']
+	source = "${buildDir}/resources/combine/kemo.all.css"
+    dest = file("${resProdDir}/css/kemo.all.min.css")
+}
+
+task minifyMidnightThemeCss(type: minifyCss.class) {
+	dependsOn = ['deleteProdResourcesTask']
+	source = "${resDir}/css/theme-midnight.css"
+    dest = file("${resProdDir}/css/theme-midnight.min.css")
+}

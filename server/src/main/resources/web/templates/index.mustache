@@ -1,0 +1,86 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>kemo.rocks</title>
+		<link rel="shortcut icon" href="/static/icons/favicon.ico" />
+		<link rel="apple-touch-icon" href="/static/icons/Icon-76@2x.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="/static/icons/Icon-76.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="/static/icons/Icon-120.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="/static/icons/Icon-76@2x.png">
+		<link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+		{{^prod_mode}}
+		<link rel="stylesheet" href="/static/dev/css/normalize.css?version={{res_version}}">
+		<link rel="stylesheet" href="/static/dev/css/skeleton.css?version={{res_version}}">
+		<link rel="stylesheet" href="/static/dev/css/custom.css?version={{res_version}}">
+		<link rel="stylesheet" href="/static/dev/css/theme-midnight.css?version={{res_version}}">
+		{{/prod_mode}}
+		{{#prod_mode}}
+		<link rel="stylesheet" href="/static/prod/css/normalize.min.css?version={{res_version}}">
+		<link rel="stylesheet" href="/static/prod/css/kemo.all.min.css?version={{res_version}}">
+		<link rel="stylesheet" href="/static/prod/css/theme-midnight.min.css?version={{res_version}}">
+		{{/prod_mode}}
+	</head>
+	<body>
+		<div class="container">
+			<section class="header">
+				<h1><a href="/">kemo<b>.</b>rocks</a></h1>
+				<div class="row">
+					<div class="ten columns">
+						<p>Simple secure anonymous messaging</p>
+					</div>
+					<div class="one columns">
+						<a href="/labs" target="_blank">Labs</a>
+					</div>
+					<div class="one columns">
+						<a href="http://blog.kemo.rocks" target="_blank">Blog</a>
+					</div>
+				</div>
+			</section>
+			<section class="welcome">
+				<!-- Ugly hack related to: http://stackoverflow.com/questions/33250524/secure-websocket-with-custom-domain-to-openshift-app-failed -->
+				{{^prod_mode}}
+				<iframe src="/embedded" class="chat-embedded" frameborder="0"></iframe>
+				{{/prod_mode}}
+				{{#prod_mode}}
+				<iframe src="https://kemoundertow-krablak.rhcloud.com/embedded" class="chat-embedded" frameborder="0"></iframe>
+				{{/prod_mode}}
+			</section>	
+			<section class="welcome">
+				<div class="row">
+					<div class="four columns">
+						<h2>anonymous</h2>
+						No user accounts, no nicknames or anything what can identify any user.
+					</div>
+					<div class="four columns">
+						<h2>secure</h2>
+						Encrypted messaging using secured transport channel. No messages or keys are stored anywhere.
+					</div>
+					<div class="four columns">
+						<h2>simple</h2>
+						No registration or installation is required. Just open and chat.
+					</div>
+				</div>
+			</section>
+			<div class="row footer">
+				<div class="twelve columns">
+					<small>
+						Contact us at <a href="mailto:team@kemo.rocks">team@kemo.rocks</a>
+					</small>
+				</div>
+			</div>	
+		</div>
+	</body>
+	{{^prod_mode}}
+	<script src="/static/dev/js/riot.min.js?version={{res_version}}"></script>
+	<script src="/static/dev/js/kemo.core.js?version={{res_version}}"></script>
+	<script src="/static/dev/js/kemo.client.ext.js?version={{res_version}}"></script>
+	<script src="/static/dev/js/kemo.welcome_page.js?version={{res_version}}"></script>
+	{{/prod_mode}}
+	{{#prod_mode}}
+	<script src="/static/prod/js/welcome.all.min.js?version={{res_version}}"></script>
+	{{/prod_mode}}
+</html>

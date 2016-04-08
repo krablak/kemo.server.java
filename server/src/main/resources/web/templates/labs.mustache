@@ -1,0 +1,105 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Labs - kemo.rocks</title>	    
+		<link rel="shortcut icon" href="/static/icons/favicon.ico" />
+		<link rel="apple-touch-icon" href="/static/icons/Icon-76@2x.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="/static/icons/Icon-76.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="/static/icons/Icon-120.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="/static/icons/Icon-76@2x.png">
+		<link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+		{{^prod_mode}}
+		<link rel="stylesheet" href="/static/dev/css/normalize.css?version={{res_version}}">
+		<link rel="stylesheet" href="/static/dev/css/skeleton.css?version={{res_version}}">
+		<link rel="stylesheet" href="/static/dev/css/custom.css?version={{res_version}}">
+		<link rel="stylesheet" href="/static/dev/css/theme-midnight.css?version={{res_version}}">
+		{{/prod_mode}}
+		{{#prod_mode}}
+		<link rel="stylesheet" href="/static/prod/css/normalize.min.css?version={{res_version}}">
+		<link rel="stylesheet" href="/static/prod/css/kemo.all.min.css?version={{res_version}}">
+		<link rel="stylesheet" href="/static/prod/css/theme-midnight.min.css?version={{res_version}}">
+		{{/prod_mode}}
+	</head>
+	<body>
+		<div class="container">
+			<section class="header">
+				<h1><a href="/">kemo<b>.</b>rocks</a></h1>
+				<div class="row">
+					<div class="eight columns">
+						<p>Simple secure anonymous messaging</p>
+					</div>
+					<div class="one columns">
+						<a href="/labs" target="_blank">Labs</a>
+					</div>
+					<div class="one columns">
+						<a href="http://blog.kemo.rocks" target="_blank">Blog</a>
+					</div>
+				</div>
+			</section>
+			<section>
+				<h2>comming soon</h2>
+				<div class="row">
+					<div class="four columns">
+						<ul>
+							<li>Naked domain with https</li>
+							<li class="task-done"><a href="http://blog.kemo.rocks/post/142363010419/how-title-notifications-works-on-kemorocks-pdf">Embedded Notifications</a></li>
+							<li>Embedded JS toolkit</li>
+						</ul>
+					</div>
+					<div class="four columns">
+						<ul>
+							<li>Complex security</li>
+							<li>Large keys support</li>
+							<li>Python client</li>
+						</ul>
+					</div>
+					<div class="four columns">
+						<ul>
+							<li>Tor support</li>
+							<li>Documentation</li>
+							<li>UI tests</li>
+						</ul>
+					</div>
+				</div>
+				<h2>techstack</h2>
+				<p>
+					<ul>
+						<li>Backend
+							<ul>
+								<li><a href="http://www.oracle.com/technetwork/java/javase/overview/java8-2100321.html">Java 8</a></li>
+								<li><a href="http://undertow.io">Undertow</a></li>
+								<li><a href="https://www.openshift.com">Openshift</a></li>
+							</ul>
+						</li>
+						<li>Frontend
+							<ul>
+								<li><a href="http://riotjs.com">Riot.js</a></li>
+								<li><a href="https://github.com/spullara/mustache.java">Mustache.java</a></li>
+							</ul>
+						</li>
+						<li>Building
+							<ul>
+								<li><a href="http://gradle.org">Gradle</a></li>
+							</ul>
+						</li>
+						<li>Standalone Clients
+							<ul>
+								<li><a href="https://www.python.org">Python</a></li>
+								<li><a href="https://developer.apple.com/swift/">Swift</a></li>
+							</ul>
+						</li>
+					</ul>
+				</p>
+			</section>	
+			<div class="row">
+				<div class="twelve columns">
+					<small>
+						Contact us at <a href="mailto:team@kemo.rocks">team@kemo.rocks</a>
+					</small>
+				</div>
+			</div>	
+		</div>
+	</body>
+</html>
