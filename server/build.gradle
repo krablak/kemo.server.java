@@ -22,7 +22,7 @@ task fatJar(type: Jar) {
         	'Implementation-Version': version,
         	'Main-Class': 'com.pyjunkies.kemo.server.KemoServer'
     }
-    baseName = project.name + '-all'
+    baseName = 'kemo-server-all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
