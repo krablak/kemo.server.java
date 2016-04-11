@@ -3,3 +3,5 @@
 .project
 server/.gradle
 server/.settings
+.recommenders
+server-test/.gradle
