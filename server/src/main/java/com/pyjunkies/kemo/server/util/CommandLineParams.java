@@ -53,10 +53,24 @@ public class CommandLineParams {
 		return new CommandLineParams(args);
 	}
 
+	/**
+	 * Returns found value as {@link String}.
+	 * 
+	 * @param nameVariants
+	 *            argument name variants.
+	 * @return found value or empty optional.
+	 */
 	public Optional<String> get(String... nameVariants) {
 		return findFirst(nameVariants);
 	}
 
+	/**
+	 * Returns found value as {@link Boolean}.
+	 * 
+	 * @param nameVariants
+	 *            argument name variants.
+	 * @return found value or empty optional.
+	 */
 	public Optional<Boolean> getBool(String... nameVariants) {
 		Optional<Boolean> found = Optional.empty();
 		Optional<String> foundStrOpt = findFirst(nameVariants);
