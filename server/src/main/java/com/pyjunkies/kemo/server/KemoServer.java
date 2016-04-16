@@ -50,8 +50,8 @@ public class KemoServer {
 		// Get access log directory path
 		Optional<String> accessLogDir = params.get("-a", "--accesslog");
 
-		log.infov("Bind address : ''{0}''", bindAddress);
-		log.infov("Production mode : ''{0}''", isProductionMode);
+		log.infof("Bind address : '%s'", bindAddress);
+		log.infof("Production mode : '%s'", isProductionMode);
 
 		// Prepare server handers path and Undertow server
 		PathHandler path = Handlers.path();
