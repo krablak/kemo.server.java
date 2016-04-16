@@ -5,3 +5,4 @@ server/.gradle
 server/.settings
 .recommenders
 server-test/.gradle
+server-test/.settings

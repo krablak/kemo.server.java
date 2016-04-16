@@ -1,6 +1,11 @@
 package com.pyjunkies.kemo.server.util;
 
+import static com.pyjunkies.kemo.server.logging.AccessLogWriterUtils.toMessage;
 import static io.undertow.util.HttpString.tryFromString;
+
+import java.util.Date;
+
+import com.pyjunkies.kemo.server.logging.AccessLogWriter;
 
 import io.undertow.server.HandlerWrapper;
 import io.undertow.server.HttpHandler;
@@ -43,12 +48,38 @@ public class HandlerUtils {
 				return new HttpHandler() {
 					@Override
 					public void handleRequest(final HttpServerExchange exchange) throws Exception {
+						handler.handleRequest(exchange);
 						if (endsWith(exchange.getRelativePath(), endsWith)) {
-							handler.handleRequest(exchange);
 							exchange.getResponseHeaders().add(Constants.ResponseHeader.CACHE_CONTROL, "max-age=315360000, public");
 							exchange.getResponseHeaders().add(Constants.ResponseHeader.EXPIRES, "Thu, 31 Dec 2037 23:55:55 GMT");
-						} else {
+						}
+					}
+				};
+			}
+		};
+	}
+
+	public static HandlerWrapper accessLog(String logDirPath, String... excludeStartsWith) {
+		// Access log writer
+		final AccessLogWriter logWriter = new AccessLogWriter(logDirPath);
+		// Prepare wrapper instance
+		return new HandlerWrapper() {
+			@Override
+			public HttpHandler wrap(final HttpHandler handler) {
+				return new HttpHandler() {
+					@Override
+					public void handleRequest(final HttpServerExchange exchange) throws Exception {
+						final long startTime = new Date().getTime();
+						try {
+							// Handle request
 							handler.handleRequest(exchange);
+						} finally {
+							final long endTime = new Date().getTime();
+							// Exclude requests starting with excluded paths
+							if (!startsWith(exchange.getRelativePath(), excludeStartsWith)) {
+								// Log request
+								logWriter.write(toMessage(exchange, endTime - startTime));
+							}
 						}
 					}
 				};
@@ -77,6 +108,29 @@ public class HandlerUtils {
 			}
 		}
 		return endsWithRes;
+	}
+
+	/**
+	 * Returns <code>true</code> when relative path starts with one of given
+	 * strings.
+	 * 
+	 * @param relativePath
+	 *            path to be checked.
+	 * @param startsWith
+	 *            checked relative paths start strings.
+	 * @return start strings check result.
+	 */
+	private static boolean startsWith(String relativePath, String... startsWith) {
+		boolean startsWithRes = false;
+		if (relativePath != null) {
+			for (String curStartsWith : startsWith) {
+				startsWithRes = relativePath.startsWith(curStartsWith);
+				if (startsWithRes) {
+					break;
+				}
+			}
+		}
+		return startsWithRes;
 	}
 
 }
