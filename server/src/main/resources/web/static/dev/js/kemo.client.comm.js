@@ -4,6 +4,16 @@ var kemo = function(kemo) {
 	// Kemo client communication components module
 	kemo.client.comm = kemo.client.comm || {};
 
+	// Communication module configuration
+	kemo.client.comm.config = {
+		// Flag says if audit logging on module level is enabled
+		auditEnabled : true,
+		// Timeout for regular connection check
+		checkTimeout : 15000,
+		// Time out for reconnect attempt after error
+		onErrorReconnect : 10000
+	};
+
 	// Support function to create communication address from key
 	var keyToAddress = function(key) {
 		return encodeURIComponent(sjcl.codec.base64.fromBits(sjcl.hash.sha256.hash("littlebitof" + key + "salt")));
@@ -48,6 +58,29 @@ var kemo = function(kemo) {
 		return host + "/messaging/" + keyToAddress(key);
 	};
 
+	// Writes audit log messages into browser log
+	var auditLog = function(code, messaging, msg) {
+		if (kemo.client.comm.config.auditEnabled && console && console.log) {
+			var messagingInfo = "null";
+			if (messaging && messaging.ws) {
+				messagingInfo = "state: ";
+				if (messaging.ws.readyState === WebSocket.CONNECTING) {
+					messagingInfo += "CONNECTING";
+				} else if (messaging.ws.readyState === WebSocket.OPEN) {
+					messagingInfo += "OPEN";
+				} else if (messaging.ws.readyState === WebSocket.CLOSING) {
+					messagingInfo += "CLOSING";
+				} else if (messaging.ws.readyState === WebSocket.CLOSED) {
+					messagingInfo += "CLOSED";
+				} else {
+					messagingInfo += "UNKNOWN";
+				}
+			}
+			var addMsg = msg !== undefined ? " " + msg : "";
+			console.log(new Date().toUTCString() + " " + (code !== undefined ? code : "UNKNOWN") + " " + messagingInfo + addMsg);
+		}
+	};
+
 	// Object representing messaging API
 	kemo.client.comm.Messaging = function(key) {
 		var self = this;
@@ -58,15 +91,21 @@ var kemo = function(kemo) {
 
 		// Connect API to server websocket
 		self.connect = function(key, afterOnOpen) {
+			auditLog("CONNECT", self);
 			try {
 				self.key = key;
 				// Close existing web socket connection
-				if (self.ws && self.ws.readyState === 1) {
+				if (self.ws && (self.ws.readyState === WebSocket.OPEN || self.ws.readyState === WebSocket.CONNECTING)) {
+					auditLog("CONNECT_CLOSING", self);
+					self.ws.onmessage = function() {
+					};
 					self.ws.close();
 				}
 				// Open new connection with given key
 				self.ws = new WebSocket(resolveUrl(key));
+				auditLog("CONNECT_NEWSOCKET", self);
 				self.ws.onopen = function() {
+					auditLog("CONNECT_NEWSOCKET_OPEN", self);
 					self.ws.onmessage = function(event) {
 						self.onmessage(decrypt(self.key, event.data));
 					};
@@ -74,34 +113,78 @@ var kemo = function(kemo) {
 						afterOnOpen();
 					}
 				}
+				// On error perform reconnect
+				self.ws.onerror = function() {
+					auditLog("ONERROR", self);
+					setTimeout(self.reconnect, kemo.client.comm.config.onErrorReconnect);
+				};
 			} catch (err) {
 				// Do not propagate up... silently fails.
+				auditLog("UNEXPECTEDERROR", self, err);
 			}
 		};
 
 		// Called when message is received and decrypted
 		self.onmessage = function(message) {
-
 		};
 
 		// Sends message
 		self.send = function(key, message) {
-			if (self.ws.readyState !== 1 || self.key !== key) {
+			if (self.ws.readyState !== WebSocket.OPEN || self.key !== key) {
+				auditLog("SEND_NEEDCONNECT", self);
 				self.connect(key, function() {
 					self.ws.send(encrypt(key, message));
 				});
 			} else {
+				auditLog("SEND", self);
 				self.ws.send(encrypt(key, message));
 			}
 		};
 
 		// Checks connection and reconnects client when needed
 		self.connectionCheck = function() {
-			if (self.ws && self.ws.readyState !== 1) {
-				self.connect(self.key);
+			auditLog("CHECK", self);
+			if (self.ws && (self.ws.readyState !== WebSocket.CONNECTING && self.ws.readyState !== WebSocket.OPEN)) {
+				self.reconnect();
 			}
 			// Plan next connection check round
-			setTimeout(self.connectionCheck, 5000);
+			setTimeout(self.connectionCheck, kemo.client.comm.config.checkTimeout);
+		};
+
+		// Disconnect current connection if exists and creates new one.
+		self.reconnect = function() {
+			auditLog("RECONNECT", self);
+			// Check that client exists
+			if (self.ws) {
+				if (self.ws.readyState === WebSocket.CONNECTING || self.ws.readyState === WebSocket.OPEN) {
+					auditLog("RECONNECT_OPEN/CONNECTING", self);
+					// Unset message event handler
+					self.ws.onmessage = function() {
+					};
+					// Try to close current connection
+					self.ws.close();
+					// On close try to connect to server again
+					self.ws.onclose = function() {
+						self.connect(self.key, null);
+					};
+				} else if (self.ws.readyState === WebSocket.CLOSING) {
+					auditLog("RECONNECT_CLOSING", self);
+					// Unset message event handler
+					self.ws.onmessage = function() {
+					};
+					// On close try to connect to server again
+					self.ws.onclose = function() {
+						self.connect(self.key, null);
+					};
+				} else if (self.ws.readyState === WebSocket.CLOSED) {
+					auditLog("RECONNECT_CLOSED", self);
+					// Ok just create new connection
+					self.connect(self.key, null);
+				}
+			} else {
+				auditLog("RECONNECT_NEWCONNECTION", self);
+				self.connect(self.key, null);
+			}
 		};
 
 		return self;
