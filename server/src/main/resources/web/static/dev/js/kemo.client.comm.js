@@ -16,7 +16,7 @@ var kemo = function(kemo) {
 
 	// Support function to create communication address from key
 	var keyToAddress = function(key) {
-		return encodeURIComponent(sjcl.codec.base64.fromBits(sjcl.hash.sha256.hash("littlebitof" + key + "salt")));
+		return kemo.encryption.keyToAddress(key);
 	};
 
 	var saltKey = function(key) {
@@ -25,14 +25,14 @@ var kemo = function(kemo) {
 
 	// Simple wrapper over encryption part
 	var encrypt = function(key, data) {
-		return sjcl.encrypt(saltKey(key), data);
+		return kemo.encryption.encrypt(saltKey(key), data);
 	};
 
 	// Simple wrapper over decryption part
 	var decrypt = function(key, data) {
 		var decryptedData = "";
 		try {
-			decryptedData = sjcl.decrypt(saltKey(key), data);
+			decryptedData = kemo.encryption.decrypt(saltKey(key), data);
 		} catch (err) {
 			// Encryption fails for whatever reason.. just log it
 			console.error("Unexpected error when decrypting received message.", err)

@@ -59,7 +59,7 @@ task minifyCustomWelcomeJs(type:minifyJs.class){
 task combineAllWelcomeJs(type: combineJs.class){
 	dependsOn = ['minifyCustomWelcomeJs']
     source = [
-    		"${resDir}/js/riot.min.js",
+    		"${resDir}/js/thirdparty/riot/riot.min.js",
     		"${buildDir}/resources/min/welcome.all.min.js"
     		]
     dest = file("${resProdDir}/js/welcome.all.min.js")
@@ -70,8 +70,8 @@ task combineAllWelcomeJs(type: combineJs.class){
 task combineAllJs(type: combineJs.class){
 	dependsOn = ['deleteProdResourcesTask','minifyKemoJs']
     source = [
-    		"${resDir}/js/SJCL.min.js",
-    		"${resDir}/js/riot.min.js",
+    		"${resDir}/js/thirdparty/forge/forge.min.js",
+    		"${resDir}/js/thirdparty/riot/riot.min.js",
     		"${buildDir}/resources/min/kemo.all.min.js"
     		]
     dest = file("${resProdDir}/js/all.min.js")
@@ -92,6 +92,7 @@ task combineKemoJs(type: combineJs.class){
 	dependsOn = ['deleteProdResourcesTask']
     source = [
     		"${resDir}/js/kemo.core.js",
+    		"${resDir}/js/kemo.client.encryption.js",
 			"${resDir}/js/kemo.client.comm.js",
 			"${resDir}/js/kemo.client.view.js",
 			"${resDir}/js/kemo.client.ext.js",
