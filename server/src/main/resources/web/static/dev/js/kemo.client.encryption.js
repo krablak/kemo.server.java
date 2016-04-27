@@ -82,7 +82,7 @@ var kemo = function(kemo) {
 		});
 		decipher.update(encryptedData);
 		// Get decryption result
-		var decryptedBytes = decipher.output.getBytes();
+		var decryptedBytes = forge.util.decodeUtf8(decipher.output.getBytes());
 		// Cleanup decryption component
 		decipher.finish();
 		return decryptedBytes;
