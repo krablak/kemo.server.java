@@ -1,0 +1,101 @@
+
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>kemo.rocks</title>
+<link href='http://fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="css/normalize.css">
+<link rel="stylesheet" href="css/skeleton.css">
+<link rel="stylesheet" href="css/custom.css">
+<link id="theme-stylesheet" rel="stylesheet" href="css/themes/theme-light.css">
+</head>
+<body>
+	<div class="container">
+		<section class="header">
+			<div class="row">
+				<div class="five columns">
+					<form>
+						<label for="theme-select">Theme selection:</label>
+						<select id="theme-select" class="u-full-width" onchange="changeTheme()">
+							<option selected="selected" value="theme-light.css">theme-light.css</option>
+			                <option value="theme-midnight.css">theme-midnight.css</option>
+			                <option value="theme-midnight-light.css">theme-midnight-light.css</option>
+			                <option value="theme-white.css">theme-white.css</option>
+			                <option value="theme-pasteloon.css">theme-pasteloon.css</option>
+			                <option value="theme-pinky.css">theme-pinky.css</option>
+			                <option value="theme-pinky-dark.css">theme-pinky-dark.css</option>
+			                <option value="theme-bluma.css">theme-bluma.css</option>
+			                <option value="theme-white-green.css">theme-white-green.css</option>
+			            </select>
+		            </form>
+	            </div>
+            </div>
+			<h1>
+				<a href="#">kemo<b>.</b>rocks
+				</a>
+			</h1>
+			<div class="row">
+				<div class="ten columns">
+					<p>Simple secure anonymous messaging</p>
+				</div>
+				<div class="one columns">
+					<a href="#" target="_blank">Link</a>
+				</div>
+				<div class="one columns">
+					<a href="#" target="_blank">Link</a>
+				</div>
+			</div>
+		</section>
+		<section class="welcome">
+			<div>
+				<div class="row">
+					<input type="password" value="key" class="key-field">
+				</div>
+				<div class="row">
+					<div class="messages-box">
+						<div>Received message text</div>
+						<div class="sent">Sent message text</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="ten columns">
+						<input type="text" class="message-box">
+					</div>
+					<div class="two columns">
+						<button class="send-btn button-primary">Send</button>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="welcome">
+			<div class="row">
+				<div class="four columns">
+					<h2>title 1</h2>
+					Church-key waistcoat bespoke whatever, jean shorts cardigan 3 wolf moon scenester 8-bit street art synth brooklyn.
+				</div>
+				<div class="four columns">
+					<h2>title 2</h2>
+					Artisan hella single-origin coffee, wolf lumbersexual scenester craft beer lo-fi literally. Fingerstache cray cornhole retro PBR&B. Retro artisan leggings PBR&B, schlitz ugh pinterest austin art party truffaut vice kitsch.
+				</div>
+				<div class="four columns">
+					<h2>title 3</h2>
+					Sriracha forage flannel, authentic DIY taxidermy man braid fanny pack fixie tofu vegan trust fund kitsch yr.
+				</div>
+			</div>
+		</section>
+		<div class="row footer">
+			<div class="twelve columns">
+				<small> Contact us at <a href="mailto:#">small@email.link</a>
+				</small>
+			</div>
+		</div>
+	</div>
+	<script>
+		function changeTheme(){
+			document.getElementById("theme-stylesheet").href= "css/themes/" + document.getElementById("theme-select").value;
+		};
+	</script>
+</body>
+</html>

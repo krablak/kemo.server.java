@@ -1,0 +1,69 @@
+/**
+* Theme White
+* Link 
+**/
+body {
+	background-color: white;
+    color: black;
+    letter-spacing: 0.07em;
+}
+
+h1 a {
+    color: black;
+}
+
+h1 a:hover {
+    color: black;
+}
+
+a {
+	color: gray;
+}
+
+a:hover {
+	color: gray;
+}
+
+button.button-primary, input[type="submit"].button-primary, input[type="reset"].button-primary, input[type="button"].button-primary {
+    color: black;
+    background-color: white;
+    border-color: gray;
+}
+button.button-primary:hover, input[type="submit"].button-primary:hover, input[type="reset"].button-primary:hover, input[type="button"].button-primary:hover {
+    color: black;
+    background-color: white;
+    border-color: gray;
+}
+
+button.button-primary:focus, input[type="submit"].button-primary:focus, input[type="reset"].button-primary:focus, input[type="button"].button-primary:focus {
+    color: black;
+    background-color: white;
+    border-color: gray;
+}
+
+input[type="email"], input[type="number"], input[type="search"], input[type="text"], input[type="tel"], input[type="url"], input[type="password"], textarea {
+    background-color: white;
+    border-color: gray;
+}
+
+.messages-box {
+    background-color: white;
+    border: 1px solid gray;
+}
+
+.messages-box div.sent {
+	 color: #82828B;
+}
+
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border:1px solid gray;
+}
+

@@ -1,0 +1,69 @@
+/**
+* Theme Pinky dark
+* Link http://paletton.com/#uid=15-1r0kl1Wx1x+IcEXDsUWkWEVB
+**/
+body {
+	background-color: #FE9AA3;
+    color: FFF3F4;
+    letter-spacing: 0.07em;
+}
+
+h1 a {
+    color: black;
+}
+
+h1 a:hover {
+    color: black;
+}
+
+a {
+	color: #FE192F;
+}
+
+a:hover {
+	color: #FE192F;
+}
+
+button.button-primary, input[type="submit"].button-primary, input[type="reset"].button-primary, input[type="button"].button-primary {
+    color: #FFF3F4;
+    background-color: #FE5767;
+    border-color: #FE192F;
+}
+button.button-primary:hover, input[type="submit"].button-primary:hover, input[type="reset"].button-primary:hover, input[type="button"].button-primary:hover {
+    color: #FFF3F4;
+    background-color: #FE5767;
+    border-color: #FE192F;
+}
+
+button.button-primary:focus, input[type="submit"].button-primary:focus, input[type="reset"].button-primary:focus, input[type="button"].button-primary:focus {
+    color: #FFF3F4;
+    background-color: #FE5767;
+    border-color: #FE192F;
+}
+
+input[type="email"], input[type="number"], input[type="search"], input[type="text"], input[type="tel"], input[type="url"], input[type="password"], textarea {
+    background-color: #FE5767;
+    border-color: #FE192F;
+}
+
+.messages-box {
+    background-color: #FE5767;
+    border: 1px solid #FE192F;
+}
+
+.messages-box div.sent {
+	 color: #82828B;
+}
+
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="text"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border:1px solid #FE192F;
+}
+
