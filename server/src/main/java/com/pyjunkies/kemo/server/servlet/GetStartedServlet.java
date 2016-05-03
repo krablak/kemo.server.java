@@ -15,12 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.pyjunkies.kemo.server.Constants;
 
 /**
- * Handles requests on "Labs" page providing info about future vesions.
+ * Handles requests on window with chat UI only.
  * 
  * @author krablak
  *
  */
-public class LabsServlet extends HttpServlet implements Servlet {
+public class GetStartedServlet extends HttpServlet implements Servlet {
 
 	private static final long serialVersionUID = 1L;
 
@@ -29,7 +29,7 @@ public class LabsServlet extends HttpServlet implements Servlet {
 		boolean prodMode = Boolean.valueOf(getServletConfig().getInitParameter(Constants.Params.MODE_PROD));
 		try (PrintWriter out = resp.getWriter()) {
 			resp.setContentType("text/html");
-			render("web/templates/labs.mustache", newParams(getServletConfig()), resp.getWriter(), !prodMode);
+			render("web/templates/getstarted.mustache", newParams(getServletConfig()), resp.getWriter(), !prodMode);
 		}
 	}
 

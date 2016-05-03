@@ -19,7 +19,7 @@ var kemo = function(kemo) {
 	riot.tag2('kemo-chat', '\
 			<div>\
 				<div class="row">\
-					<input type="password" kemo-type="key" value={key} onchange="{onKeyChanged}" onblur="{onKeyChanged}" class="key-field"/>\
+					<input type="password" kemo-type="key" placeholder="Place you secret key here..." value={key} onchange="{onKeyChanged}" onblur="{onKeyChanged}" class="key-field"/>\
 				</div>\
 				<div class="row">\
 					<div kemo-type="messages" class="messages-box">\

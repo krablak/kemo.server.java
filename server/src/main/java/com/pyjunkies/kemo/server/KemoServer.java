@@ -14,7 +14,7 @@ import org.jboss.logging.Logger;
 
 import com.pyjunkies.kemo.server.logging.LoggerInitiliazer;
 import com.pyjunkies.kemo.server.servlet.EmbeddedChatServlet;
-import com.pyjunkies.kemo.server.servlet.LabsServlet;
+import com.pyjunkies.kemo.server.servlet.GetStartedServlet;
 import com.pyjunkies.kemo.server.servlet.WelcomeServlet;
 import com.pyjunkies.kemo.server.util.CommandLineParams;
 import com.pyjunkies.kemo.server.websocket.MessagingWebSocketEndpoint;
@@ -78,10 +78,10 @@ public class KemoServer {
 						.addInitParam(Constants.Params.MODE_PROD, valueOf(isProductionMode))
 						.addInitParam(Constants.Params.MODE_RES_VERSION, valueOf(new Date().getTime()))
 						.addMapping("/index.html"))
-				.addServlet(servlet(LabsServlet.class)
+				.addServlet(servlet(GetStartedServlet.class)
 						.addInitParam(Constants.Params.MODE_PROD, valueOf(isProductionMode))
 						.addInitParam(Constants.Params.MODE_RES_VERSION, valueOf(new Date().getTime()))
-						.addMapping("/labs"))
+						.addMapping("/getstarted"))
 				.addServlet(servlet(EmbeddedChatServlet.class)
 						.addInitParam(Constants.Params.MODE_PROD, valueOf(isProductionMode))
 						.addInitParam(Constants.Params.MODE_RES_VERSION, valueOf(new Date().getTime()))

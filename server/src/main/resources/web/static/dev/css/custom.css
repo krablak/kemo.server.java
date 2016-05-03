@@ -26,8 +26,17 @@ h1 b {
 }
 
 section.welcome {
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin-top: 15px;
+	padding-top: 5px;
+	margin-bottom: 15px;
+	padding-bottom: 5px;
+}
+
+section.footer {
+	margin-top: 15px;
+	padding-top: 30px;
+	background-color: #eee;
+	min-height: 200px;	
 }
 
 .task-done {
