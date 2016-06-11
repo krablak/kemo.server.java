@@ -1,6 +1,7 @@
 package com.pyjunkies.kemo.templates;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +59,25 @@ public final class RenderUtil {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * Renders given template with passed parameters and returns result as
+	 * string.
+	 * 
+	 * @param templatePath
+	 *            path to template on classpath.
+	 * @param params
+	 *            map with template parameters.
+	 * @param devel
+	 *            in case of <code>true</code> value templates caching will be
+	 *            disabled.
+	 * @return result of template rendering as string.
+	 */
+	public static String render(String templatePath, Map<String, Object> params, boolean devel) {
+		Writer outWriter = new StringWriter();
+		render(templatePath, params, outWriter, devel);
+		return outWriter.toString();
 	}
 
 }

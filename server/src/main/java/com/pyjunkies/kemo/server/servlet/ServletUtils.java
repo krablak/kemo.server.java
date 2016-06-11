@@ -1,11 +1,13 @@
 package com.pyjunkies.kemo.server.servlet;
 
+import static com.pyjunkies.kemo.server.util.TemplateParameters.params;
+import static com.pyjunkies.kemo.templates.RenderUtil.render;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
-import javax.servlet.ServletConfig;
-
-import com.pyjunkies.kemo.server.Constants;
+import com.pyjunkies.kemo.server.GlobalSettings;
 
 /**
  * Provides common helper for servlets.
@@ -18,20 +20,47 @@ public final class ServletUtils {
 	private ServletUtils() {
 	}
 
+	private static Map<String, Object> cachedDefaultParams;
+
 	/**
-	 * Returns new map with parameters.
+	 * Returns new instance of parameters map based on default parameters common
+	 * for most pages.
 	 * 
-	 * @param servletConfig
-	 *            servlet configuration.
-	 * @return map with basic common parameters.
+	 * @return new parameters map.
 	 */
-	static Map<String, Object> newParams(ServletConfig servletConfig) {
-		Map<String, Object> params = new HashMap<String, Object>();
-		if (servletConfig != null) {
-			params.put("prod_mode", Boolean.valueOf(servletConfig.getInitParameter(Constants.Params.MODE_PROD)));
-			params.put("res_version", servletConfig.getInitParameter(Constants.Params.MODE_RES_VERSION));
+	public static Map<String, Object> defaultParams() {
+		if (cachedDefaultParams == null) {
+			cachedDefaultParams = params().add(coreParams()).add(headerAndFooter()).get();
 		}
-		return params;
+		return new HashMap<>(cachedDefaultParams);
+	}
+
+	/**
+	 * Provides function adding core parameters required by every page.
+	 * 
+	 * @return ready to use function.
+	 */
+	public static Function<Map<String, Object>, Map<String, Object>> coreParams() {
+		return params -> {
+			params = params != null ? params : new HashMap<>();
+			params.put("prod_mode", GlobalSettings.prodMode);
+			params.put("res_version", GlobalSettings.resourcesVersion);
+			return params;
+		};
+	}
+
+	/**
+	 * Provides function adding header and footer html parts.
+	 * 
+	 * @return ready to use function.
+	 */
+	public static Function<Map<String, Object>, Map<String, Object>> headerAndFooter() {
+		return params -> {
+			params = params != null ? params : new HashMap<>();
+			params.put("header_html", render("web/templates/parts/header.mustache", params, GlobalSettings.prodMode));
+			params.put("footer_html", render("web/templates/parts/footer.mustache", params, GlobalSettings.prodMode));
+			return params;
+		};
 	}
 
 }

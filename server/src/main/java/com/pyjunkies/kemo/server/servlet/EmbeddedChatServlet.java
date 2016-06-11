@@ -1,10 +1,12 @@
 package com.pyjunkies.kemo.server.servlet;
 
-import static com.pyjunkies.kemo.server.servlet.ServletUtils.newParams;
+import static com.pyjunkies.kemo.server.servlet.ServletUtils.coreParams;
+import static com.pyjunkies.kemo.server.util.TemplateParameters.params;
 import static com.pyjunkies.kemo.templates.RenderUtil.render;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -12,7 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.pyjunkies.kemo.server.Constants;
+import com.pyjunkies.kemo.server.GlobalSettings;
 
 /**
  * Provides chat to be displayed in IFRAME.
@@ -26,10 +28,10 @@ public class EmbeddedChatServlet extends HttpServlet implements Servlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		boolean prodMode = Boolean.valueOf(getServletConfig().getInitParameter(Constants.Params.MODE_PROD));
 		try (PrintWriter out = resp.getWriter()) {
+			Map<String, Object> params = params().add(coreParams()).get();
 			resp.setContentType("text/html");
-			render("web/templates/embedded.mustache", newParams(getServletConfig()), resp.getWriter(), !prodMode);
+			render("web/templates/embedded.mustache", params, resp.getWriter(), !GlobalSettings.prodMode);
 		}
 	}
 

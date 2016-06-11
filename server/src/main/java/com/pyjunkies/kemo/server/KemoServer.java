@@ -4,17 +4,15 @@ import static com.pyjunkies.kemo.server.util.CommandLineParams.read;
 import static com.pyjunkies.kemo.server.util.HandlerUtils.accessLog;
 import static com.pyjunkies.kemo.server.util.HandlerUtils.addCacheHeaders;
 import static io.undertow.servlet.Servlets.servlet;
-import static java.lang.String.valueOf;
 import static java.util.Arrays.asList;
 
-import java.util.Date;
 import java.util.Optional;
 
 import org.jboss.logging.Logger;
 
 import com.pyjunkies.kemo.server.logging.LoggerInitiliazer;
+import com.pyjunkies.kemo.server.servlet.ChatServlet;
 import com.pyjunkies.kemo.server.servlet.EmbeddedChatServlet;
-import com.pyjunkies.kemo.server.servlet.GetStartedServlet;
 import com.pyjunkies.kemo.server.servlet.WelcomeServlet;
 import com.pyjunkies.kemo.server.util.CommandLineParams;
 import com.pyjunkies.kemo.server.websocket.MessagingWebSocketEndpoint;
@@ -43,10 +41,14 @@ public class KemoServer {
 		log.infov("Starting Kemo server with command line arguments : {0}", asList(args));
 		// Read command line parameters
 		CommandLineParams params = read(args);
+
 		// Get bind address
 		String bindAddress = params.get("-b", "--bind").orElse("localhost");
+
 		// Get production/development mode flag
 		Boolean isProductionMode = params.getBool("-m", "--mode").orElse(Boolean.FALSE);
+		GlobalSettings.prodMode = isProductionMode;
+
 		// Get access log directory path
 		Optional<String> accessLogDir = params.get("-a", "--accesslog");
 
@@ -75,16 +77,10 @@ public class KemoServer {
 								.setBuffers(new DefaultByteBufferPool(true, 100))
 								.addEndpoint(MessagingWebSocketEndpoint.class))
 				.addServlet(servlet(WelcomeServlet.class)
-						.addInitParam(Constants.Params.MODE_PROD, valueOf(isProductionMode))
-						.addInitParam(Constants.Params.MODE_RES_VERSION, valueOf(new Date().getTime()))
 						.addMapping("/index.html"))
-				.addServlet(servlet(GetStartedServlet.class)
-						.addInitParam(Constants.Params.MODE_PROD, valueOf(isProductionMode))
-						.addInitParam(Constants.Params.MODE_RES_VERSION, valueOf(new Date().getTime()))
-						.addMapping("/getstarted"))
+				.addServlet(servlet(ChatServlet.class)
+						.addMapping("/chat"))
 				.addServlet(servlet(EmbeddedChatServlet.class)
-						.addInitParam(Constants.Params.MODE_PROD, valueOf(isProductionMode))
-						.addInitParam(Constants.Params.MODE_RES_VERSION, valueOf(new Date().getTime()))
 						.addMapping("/embedded"))
 				.addInitialHandlerChainWrapper(addCacheHeaders(".js", ".css", ".ico", ".png"))
 				.setDeploymentName("kemo.war");

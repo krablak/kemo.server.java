@@ -1,0 +1,16 @@
+<link rel="shortcut icon" href="/static/icons/favicon.ico" />
+<link rel="apple-touch-icon" href="/static/icons/Icon-76@2x.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/static/icons/Icon-76.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/static/icons/Icon-120.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/static/icons/Icon-76@2x.png">
+<link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+{{^prod_mode}}
+<link rel="stylesheet" href="/static/dev/css/normalize.css?version={{res_version}}">
+<link rel="stylesheet" href="/static/dev/css/skeleton.css?version={{res_version}}">
+<link rel="stylesheet" href="/static/dev/css/custom.css?version={{res_version}}">
+<link rel="stylesheet" href="/static/dev/css/theme-apple-blue.css?version={{res_version}}">
+{{/prod_mode}} {{#prod_mode}}
+<link rel="stylesheet" href="/static/prod/css/normalize.min.css?version={{res_version}}">
+<link rel="stylesheet" href="/static/prod/css/kemo.all.min.css?version={{res_version}}">
+<link rel="stylesheet" href="/static/prod/css/theme-apple-blue.min.css?version={{res_version}}">
+{{/prod_mode}}

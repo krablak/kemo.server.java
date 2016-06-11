@@ -1,6 +1,6 @@
 package com.pyjunkies.kemo.server.servlet;
 
-import static com.pyjunkies.kemo.server.servlet.ServletUtils.newParams;
+import static com.pyjunkies.kemo.server.servlet.ServletUtils.defaultParams;
 import static com.pyjunkies.kemo.templates.RenderUtil.render;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.pyjunkies.kemo.server.Constants;
+import com.pyjunkies.kemo.server.GlobalSettings;
 
 /**
  * Handles requests on window with chat UI only.
@@ -20,16 +20,15 @@ import com.pyjunkies.kemo.server.Constants;
  * @author krablak
  *
  */
-public class GetStartedServlet extends HttpServlet implements Servlet {
+public class ChatServlet extends HttpServlet implements Servlet {
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		boolean prodMode = Boolean.valueOf(getServletConfig().getInitParameter(Constants.Params.MODE_PROD));
 		try (PrintWriter out = resp.getWriter()) {
 			resp.setContentType("text/html");
-			render("web/templates/getstarted.mustache", newParams(getServletConfig()), resp.getWriter(), !prodMode);
+			render("web/templates/chat.mustache", defaultParams(), resp.getWriter(), !GlobalSettings.prodMode);
 		}
 	}
 
