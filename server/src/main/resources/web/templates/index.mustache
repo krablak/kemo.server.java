@@ -5,8 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<title>kemo.rocks</title>
-{{&header_html}}
+<title>kemo.rocks</title> {{&header_html}}
 </head>
 <body>
 	<div class="container">
@@ -15,27 +14,62 @@
 				<a href="/">kemo<b>.</b>rocks
 				</a>
 			</h1>
-			<div class="row">
-				<div class="ten columns">
-					<p>Simple secure anonymous messaging</p>
-				</div>
-				<div class="two columns">
-					
-				</div>
-			</div>
-		</section>
-		<section class="welcome">
-			<!-- Ugly hack related to: http://stackoverflow.com/questions/33250524/secure-websocket-with-custom-domain-to-openshift-app-failed -->
-			{{^prod_mode}}
-			<iframe src="/embedded" class="chat-embedded" frameborder="0"></iframe>
-			{{/prod_mode}} {{#prod_mode}}
-			<iframe src="https://kemoundertow-krablak.rhcloud.com/embedded" class="chat-embedded" frameborder="0"></iframe>
-			{{/prod_mode}}
 		</section>
 	</div>
-	<section class="footer">
-		{{&footer_html}}
+	<section class="welcome-big" style="background-color: #eee;">
+		<div class="container">
+			<div class="row">
+				<div class="one-half column">
+					<h3 class="hero-heading">Simple secure anonymous messaging</h3>
+					<a class="button button-primary" href="http://getskeleton.com">Start web client</a> <a class="button" href="#">OS X client</a>
+				</div>
+				<div class="one-half column phones">
+					<img src="/static/images/kemo-title-image.svg">
+				</div>
+			</div>
+		</div>
 	</section>
+	<div class="container">
+		<section class="welcome">
+			<div class="row">
+				<h2>Anonymous</h2>
+				<p>
+					No user accounts, no nicknames or anything what can identify any user. To improve your privacy we recommended to use <a href="https://www.torproject.org/projects/torbrowser.html.en">Tor browser</a>.
+				</p>
+				<h2>Secure</h2>
+				<p>Encrypted messaging using secured transport channel. No messages or keys are stored anywhere. It's only up to you how strong will be your key and who will know it.</p>
+				<h2>Simple</h2>
+				<p>No registration or installation is required. Just open and chat.</p>
+			</div>
+		</section>
+	</div>
+	<section class="welcome-big" style="background-color: #eee;">
+		<div class="container">
+			<div class="row">
+				<h2>Get Started</h2>
+				<ul>
+					<li>Choose your key and distribute it to chat participants</li>
+					<li>Open kemo.rocks chat using url <a href="">https://kemo.rocks/chat</a></li>
+					<li>Fill key into secret key field and start chatting</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+	<div class="container">
+		<section class="welcome">
+			<div class="row">
+				<h2>Want More?</h2>
+				<p>
+					In case of any questions contact us at <a href="mailto:team@kemo.rocks">team@kemo.rocks</a>. Your feedback is welcome.
+				</p>
+				<p>Project is still in development phase and current version is just MVP to prove that simple secure messaging platform is possible.</p>
+				<p>
+					All project news and releases are published at our <a href="http://blog.kemo.rocks">blog.kemo.rocks</a>.
+				</p>
+			</div>
+		</section>
+	</div>
+	<section class="footer">{{&footer_html}}</section>
 </body>
 {{^prod_mode}}
 <script src="/static/dev/js/thirdparty/riot/riot.min.js?version={{res_version}}"></script>

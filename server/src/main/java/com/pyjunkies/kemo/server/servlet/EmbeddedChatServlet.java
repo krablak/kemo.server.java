@@ -1,7 +1,6 @@
 package com.pyjunkies.kemo.server.servlet;
 
-import static com.pyjunkies.kemo.server.servlet.ServletUtils.coreParams;
-import static com.pyjunkies.kemo.server.util.TemplateParameters.params;
+import static com.pyjunkies.kemo.server.servlet.ServletUtils.defaultParams;
 import static com.pyjunkies.kemo.templates.RenderUtil.render;
 
 import java.io.IOException;
@@ -29,7 +28,7 @@ public class EmbeddedChatServlet extends HttpServlet implements Servlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try (PrintWriter out = resp.getWriter()) {
-			Map<String, Object> params = params().add(coreParams()).get();
+			Map<String, Object> params = defaultParams();
 			resp.setContentType("text/html");
 			render("web/templates/embedded.mustache", params, resp.getWriter(), !GlobalSettings.prodMode);
 		}

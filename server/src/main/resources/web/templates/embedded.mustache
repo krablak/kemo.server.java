@@ -4,19 +4,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>kemo.rocks</title>	    
-		<link rel="shortcut icon" href="/static/icons/favicon.ico" />
-		<link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
-		{{^prod_mode}}
-		<link rel="stylesheet" href="/static/dev/css/normalize.css?version={{res_version}}">
-		<link rel="stylesheet" href="/static/dev/css/skeleton.css?version={{res_version}}">
-		<link rel="stylesheet" href="/static/dev/css/custom.css?version={{res_version}}">
-		<link rel="stylesheet" href="/static/dev/css/theme-apple-blue.css?version={{res_version}}">
-		{{/prod_mode}}
-		{{#prod_mode}}
-		<link rel="stylesheet" href="/static/prod/css/normalize.min.css?version={{res_version}}">
-		<link rel="stylesheet" href="/static/prod/css/kemo.all.min.css?version={{res_version}}">
-		<link rel="stylesheet" href="/static/prod/css/theme-apple-blue.min.css?version={{res_version}}">
-		{{/prod_mode}}
+		{{&header_html}}
 	</head>
 	<body class="embedded-body">
 		<kemo-chat id="public-chat" key=""></kemo-chat>

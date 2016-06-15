@@ -10,6 +10,10 @@
   text-align: left;
 }
 
+h1 {
+	font-size: 8.0rem;
+}
+
 h1 a {
 	color: #222;
 	text-decoration: none;
@@ -30,6 +34,13 @@ section.welcome {
 	padding-top: 5px;
 	margin-bottom: 15px;
 	padding-bottom: 5px;
+}
+
+section.welcome-big {
+	padding-top: 25px;
+	padding-bottom: 25px;
+	padding-right: 55px;
+	padding-left: 55px;
 }
 
 section.footer {
