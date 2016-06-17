@@ -5,24 +5,21 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<title>kemo.rocks</title>
-{{&header_html}}
+<title>kemo.rocks</title> {{&header_html}}
 </head>
 <body>
-	<div class="container">
-		<section class="header">
-			<h1>
-				<a href="/">kemo<b>.</b>rocks
-				</a>
-			</h1>
+	<section class="welcome solid">
+		<div class="container">
 			<div class="row">
-				<div class="ten columns">
-					<p>Simple secure anonymous messaging</p>
-				</div>
-				<div class="two columns">
-				</div>
+				<h1>
+					<a href="/">kemo<b>.</b>rocks
+					</a>
+				</h1>
+				<h3 class="hero-heading">Simple secure anonymous messaging</h3>
 			</div>
-		</section>
+		</div>
+	</section>
+	<div class="container">
 		<section class="welcome">
 			<!-- Ugly hack related to: http://stackoverflow.com/questions/33250524/secure-websocket-with-custom-domain-to-openshift-app-failed -->
 			{{^prod_mode}}
@@ -32,16 +29,14 @@
 			{{/prod_mode}}
 		</section>
 	</div>
-	<section class="footer">
-		{{&footer_html}}
-	</section>
+	<section class="footer welcome-big bg-image-0">{{&footer_html}}</section>
 </body>
 {{^prod_mode}}
 <script src="/static/dev/js/thirdparty/riot/riot.min.js?version={{res_version}}"></script>
 <script src="/static/dev/js/kemo.core.js?version={{res_version}}"></script>
 <script src="/static/dev/js/kemo.client.ext.js?version={{res_version}}"></script>
-<script src="/static/dev/js/kemo.welcome_page.js?version={{res_version}}"></script>
+<script src="/static/dev/js/kemo.chat_page.js?version={{res_version}}"></script>
 {{/prod_mode}} {{#prod_mode}}
-<script src="/static/prod/js/welcome.all.min.js?version={{res_version}}"></script>
+<script src="/static/prod/js/chat.all.min.js?version={{res_version}}"></script>
 {{/prod_mode}}
 </html>

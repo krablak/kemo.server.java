@@ -8,23 +8,22 @@
 <title>kemo.rocks</title> {{&header_html}}
 </head>
 <body>
-	<div class="container">
-		<section class="header">
-			<h1>
-				<a href="/">kemo<b>.</b>rocks
-				</a>
-			</h1>
-		</section>
-	</div>
-	<section class="welcome-big" style="background-color: #eee;">
+	<section class="welcome solid">
+		<div class="container">
+			<div class="row">
+				<h1>
+					<a href="/">kemo<b>.</b>rocks
+					</a>
+				</h1>
+			</div>
+		</div>
+	</section>
+	<section class="welcome-big bg-image-0">
 		<div class="container">
 			<div class="row">
 				<div class="one-half column">
 					<h3 class="hero-heading">Simple secure anonymous messaging</h3>
-					<a class="button button-primary" href="http://getskeleton.com">Start web client</a> <a class="button" href="#">OS X client</a>
-				</div>
-				<div class="one-half column phones">
-					<img src="/static/images/kemo-title-image.svg">
+					<a class="button button-primary" href="/chat">Start web client</a> <a class="button" href="#">OS X client</a>
 				</div>
 			</div>
 		</div>
@@ -34,22 +33,22 @@
 			<div class="row">
 				<h2>Anonymous</h2>
 				<p>
-					No user accounts, no nicknames or anything what can identify any user. To improve your privacy we recommended to use <a href="https://www.torproject.org/projects/torbrowser.html.en">Tor browser</a>.
+					No user accounts, no nicknames or anything what can identify any user. To improve your privacy we recommend to use <a href="https://www.torproject.org/projects/torbrowser.html.en">Tor browser</a>.
 				</p>
 				<h2>Secure</h2>
-				<p>Encrypted messaging using secured transport channel. No messages or keys are stored anywhere. It's only up to you how strong will be your key and who will know it.</p>
+				<p>Encrypted messaging using secured transport channel. No messages or keys are stored out of your computer. It's only up to you how strong will be your keys and who will know it.</p>
 				<h2>Simple</h2>
-				<p>No registration or installation is required. Just open and chat.</p>
+				<p>No registration or installation is required. Just <a href="/chat">open kemo web client</a> and chat.</p>
 			</div>
 		</section>
 	</div>
-	<section class="welcome-big" style="background-color: #eee;">
+	<section class="welcome-big solid">
 		<div class="container">
 			<div class="row">
 				<h2>Get Started</h2>
 				<ul>
 					<li>Choose your key and distribute it to chat participants</li>
-					<li>Open kemo.rocks chat using url <a href="">https://kemo.rocks/chat</a></li>
+					<li>Open kemo.rocks chat using url <a href="/chat">https://kemo.rocks/chat</a></li>
 					<li>Fill key into secret key field and start chatting</li>
 				</ul>
 			</div>
@@ -69,14 +68,9 @@
 			</div>
 		</section>
 	</div>
-	<section class="footer">{{&footer_html}}</section>
+	<section class="footer welcome-big bg-image-0">{{&footer_html}}</section>
 </body>
 {{^prod_mode}}
-<script src="/static/dev/js/thirdparty/riot/riot.min.js?version={{res_version}}"></script>
-<script src="/static/dev/js/kemo.core.js?version={{res_version}}"></script>
-<script src="/static/dev/js/kemo.client.ext.js?version={{res_version}}"></script>
-<script src="/static/dev/js/kemo.welcome_page.js?version={{res_version}}"></script>
 {{/prod_mode}} {{#prod_mode}}
-<script src="/static/prod/js/welcome.all.min.js?version={{res_version}}"></script>
 {{/prod_mode}}
 </html>

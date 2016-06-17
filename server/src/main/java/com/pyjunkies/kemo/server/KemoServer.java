@@ -82,7 +82,7 @@ public class KemoServer {
 						.addMapping("/chat"))
 				.addServlet(servlet(EmbeddedChatServlet.class)
 						.addMapping("/embedded"))
-				.addInitialHandlerChainWrapper(addCacheHeaders(".js", ".css", ".ico", ".png"))
+				.addInitialHandlerChainWrapper(addCacheHeaders(".js", ".css", ".ico", ".png", ".jpg"))
 				.setDeploymentName("kemo.war");
 
 		// When access log configuration is present add logging

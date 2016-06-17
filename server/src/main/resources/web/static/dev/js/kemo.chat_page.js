@@ -1,11 +1,11 @@
 /**
- * Provides functions relate to kemo.rocks welcome page.
+ * Provides functions related to kemo.rocks chat page.
  */
 var kemo = function(kemo) {
 	kemo.core = kemo.core || {};
-	kemo.core.welcome_page = kemo.core.welcome_page || {};
+	kemo.core.chat_page = kemo.core.chat_page || {};
 	var ext = kemo.client.ext;
-	var page = kemo.core.welcome_page;
+	var page = kemo.core.chat_page;
 
 	// Initializes kemo.rocks welcome page UI
 	var init = function() {

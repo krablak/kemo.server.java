@@ -11,7 +11,7 @@
 }
 
 h1 {
-	font-size: 8.0rem;
+	font-size: 7.0rem;
 }
 
 h1 a {
@@ -30,24 +30,37 @@ h1 b {
 }
 
 section.welcome {
-	margin-top: 15px;
-	padding-top: 5px;
-	margin-bottom: 15px;
-	padding-bottom: 5px;
+	padding-top: 30px;
+	padding-bottom: 30px;
 }
 
 section.welcome-big {
-	padding-top: 25px;
-	padding-bottom: 25px;
-	padding-right: 55px;
-	padding-left: 55px;
+	padding-top: 30px;
+	padding-bottom: 30px;
+	background-color: #eee;  
+	color: white;
+	min-height: 200px;
 }
 
-section.footer {
-	margin-top: 15px;
-	padding-top: 30px;
-	background-color: #eee;
-	min-height: 200px;	
+section.bg-image-0 {
+	background: url('/static/images/cables-0.jpg') no-repeat center center;
+	background-size: cover;	
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+}
+
+section.footer.bg-image-0  a {
+	background-color: rgba(255,255,255,0.9);
+	padding: 4px;
+}
+
+section.solid {
+	background-color: #565695;
+}
+
+section.solid h1 a {
+	color: #FFF;
 }
 
 .task-done {

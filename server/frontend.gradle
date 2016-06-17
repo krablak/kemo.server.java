@@ -26,7 +26,8 @@ task buildFrontend(){
 				"minifyKemoCss",
 				"minifyMidnightThemeCss",
 				"minifyAppleBlueThemeCss",
-				"combineAllWelcomeJs"
+				"minifyBigImgThemeCss",
+				"combineAllChatJs"
 				]
 }
 
@@ -35,35 +36,35 @@ task deleteProdResourcesTask(type: Delete) {
   delete = "${resProdDir}/"
 }
 
-// Welcome page scripts
-task combineCustomWelcomeJs(type: combineJs.class){
+// Chat page scripts
+task combineCustomChatJs(type: combineJs.class){
 	dependsOn = ['deleteProdResourcesTask']
     source = [
     		"${resDir}/js/kemo.core.js",
     		"${resDir}/js/kemo.client.ext.js",
-    		"${resDir}/js/kemo.welcome_page.js"
+    		"${resDir}/js/kemo.chat_page.js"
     		]
-    dest = file("${buildDir}/resources/combine/welcome.all.js")
+    dest = file("${buildDir}/resources/combine/chat.all.js")
     include "*.js"
 }
 
-task minifyCustomWelcomeJs(type:minifyJs.class){
-	dependsOn = ['combineCustomWelcomeJs']
-	source = "${buildDir}/resources/combine/welcome.all.js"
-	dest = "${buildDir}/resources/min/welcome.all.min.js"
+task minifyCustomChatJs(type:minifyJs.class){
+	dependsOn = ['combineCustomChatJs']
+	source = "${buildDir}/resources/combine/chat.all.js"
+	dest = "${buildDir}/resources/min/chat.all.min.js"
     closure {
     	compilationLevel = 'SIMPLE_OPTIMIZATIONS'
         warningLevel = 'QUIET'
     }
 }
 
-task combineAllWelcomeJs(type: combineJs.class){
-	dependsOn = ['minifyCustomWelcomeJs']
+task combineAllChatJs(type: combineJs.class){
+	dependsOn = ['minifyCustomChatJs']
     source = [
     		"${resDir}/js/thirdparty/riot/riot.min.js",
-    		"${buildDir}/resources/min/welcome.all.min.js"
+    		"${buildDir}/resources/min/chat.all.min.js"
     		]
-    dest = file("${resProdDir}/js/welcome.all.min.js")
+    dest = file("${resProdDir}/js/chat.all.min.js")
     include "*.js"
 }
 
@@ -136,4 +137,10 @@ task minifyAppleBlueThemeCss(type: minifyCss.class) {
 	dependsOn = ['deleteProdResourcesTask']
 	source = "${resDir}/css/theme-apple-blue.css"
     dest = file("${resProdDir}/css/theme-apple-blue.min.css")
+}
+
+task minifyBigImgThemeCss(type: minifyCss.class) {
+	dependsOn = ['deleteProdResourcesTask']
+	source = "${resDir}/css/theme-big-img.css"
+    dest = file("${resProdDir}/css/theme-big-img.min.css")
 }
