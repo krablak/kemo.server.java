@@ -152,7 +152,7 @@ var kemo = function(kemo) {
 			
 			// Notify page that new received message was displayed
 			if(!isSentMessage){
-				self.page.trigger('ui-received-new');
+				self.page.trigger('ui-received-new',e);
 			}
 		});
 

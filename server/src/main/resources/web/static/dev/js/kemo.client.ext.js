@@ -4,6 +4,27 @@ var kemo = function(kemo) {
 	kemo.client.ext = kemo.client.ext || {};
 	var ext = kemo.client.ext;
 
+	ext.SystemNotification = function() {
+		var self = this;
+		// Make extension observable
+		riot.observable(self);
+
+		// Request notification
+		Notification.requestPermission();
+
+		// Handle event about received message
+		self.on('ui-received-new', function(e) {
+			var ntfData = {
+				body : e.data,
+				icon : '/static/icons/Icon-76@2x.png'
+			};
+			var notification = new Notification("New message!", ntfData);
+			setTimeout(notification.close.bind(notification), 5000);
+		});
+
+		return self;
+	};
+
 	// Extension adding star to the title on received message
 	ext.TitleNotification = function() {
 		var self = this;

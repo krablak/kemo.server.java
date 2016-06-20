@@ -45,11 +45,15 @@ var kemo = function(kemo) {
 		kemo.client.on('messaging-connect', function(e) {
 			messaging.connect(e.key);
 		});
-		kemo.client.on('ui-received-new', function() {
-			titleNotifExt.trigger('ui-received-new');
+		kemo.client.on('ui-received-new', function(e) {
+			var propEvent = {
+				code : 'ui-received-new',
+				data : e
+			};
+			titleNotifExt.trigger('ui-received-new', propEvent);
 			// In case that exist parent window propagate event up
 			if (window.parent) {
-				window.parent.postMessage('ui-received-new', "*");
+				window.parent.postMessage(propEvent, "*");
 			}
 		});
 		// On window focus inform parent window
