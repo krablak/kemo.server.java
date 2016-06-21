@@ -19,7 +19,8 @@ var kemo = function(kemo) {
 	riot.tag2('kemo-chat', '\
 			<div>\
 				<div class="row">\
-					<input type="password" kemo-type="key" placeholder="Place you secret key here..." value={key} onchange="{onKeyChanged}" onblur="{onKeyChanged}" class="key-field"/>\
+					<input type="text" kemo-type="username" placeholder="Place you username here..." value={username} onchange="{onUsernameChanged}" onblur="{onUsernameChanged}" class="four columns"/>\
+					<input type="password" kemo-type="key" placeholder="Place you secret key here..." value={key} onchange="{onKeyChanged}" onblur="{onKeyChanged}" class="eight columns"/>\
 				</div>\
 				<div class="row">\
 					<div kemo-type="messages" class="messages-box">\
@@ -54,6 +55,7 @@ var kemo = function(kemo) {
 		self.on('mount', function() {
 			// Get references to chat window elements
 			self.keyInp = self.root.querySelectorAll('input[kemo-type="key"]')[0];
+			self.usernameInp = self.root.querySelectorAll('input[kemo-type="username"]')[0];
 			self.messagesDiv = self.root.querySelectorAll('div[kemo-type="messages"]')[0];
 			self.messageInp = self.root.querySelectorAll('input[kemo-type="message"]')[0];
 			self.sendBtn = self.root.querySelectorAll('button[kemo-type="send-btn"]')[0];
@@ -66,7 +68,7 @@ var kemo = function(kemo) {
 			return {
 				source : self,
 				key : self.keyInp.value,
-				message : self.messageInp.value
+				message : "["+self.usernameInp.value+"] "+self.messageInp.value
 			};
 		}
 
