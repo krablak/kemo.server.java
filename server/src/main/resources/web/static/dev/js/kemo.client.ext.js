@@ -6,21 +6,24 @@ var kemo = function(kemo) {
 
 	ext.SystemNotification = function() {
 		var self = this;
-		// Make extension observable
-		riot.observable(self);
+		// Check that notification are available in browser
+		if ("Notification" in window) {
+			// Make extension observable
+			riot.observable(self);
 
-		// Request notification
-		Notification.requestPermission();
+			// Request notification
+			Notification.requestPermission();
 
-		// Handle event about received message
-		self.on('ui-received-new', function(e) {
-			var ntfData = {
-				body : e.data,
-				icon : '/static/icons/Icon-76@2x.png'
-			};
-			var notification = new Notification("New message!", ntfData);
-			setTimeout(notification.close.bind(notification), 5000);
-		});
+			// Handle event about received message
+			self.on('ui-received-new', function(e) {
+				var ntfData = {
+					body : e.data,
+					icon : '/static/icons/Icon-76@2x.png'
+				};
+				var notification = new Notification("New message!", ntfData);
+				setTimeout(notification.close.bind(notification), 5000);
+			});
+		}
 
 		return self;
 	};
