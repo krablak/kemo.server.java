@@ -20,6 +20,10 @@ var kemo = function(kemo) {
 				sysNotifExt.trigger('ui-received-new', e.data);
 			}
 		}, false);
+		// Warn user on page leave
+		window.onbeforeunload = function() {
+			return 'Are you sure you want to leave? All settings and conversation will be lost.';
+		};
 	};
 
 	// Run client module initialization on page load
