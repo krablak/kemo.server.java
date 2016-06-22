@@ -11,16 +11,20 @@ var kemo = function(kemo) {
 			// Make extension observable
 			riot.observable(self);
 
+			// Possible notification titles
+			var ntfTitles = [ 'Hello!', 'Hey!', 'Hallo!', 'Hullo!', 'Halloo!', 'Hollo!', 'Psst!', 'Dude!' ];
+
 			// Request notification
 			Notification.requestPermission();
 
 			// Handle event about received message
 			self.on('ui-received-new', function(e) {
 				var ntfData = {
-					body : e.data,
+					body : 'New message received',
 					icon : '/static/icons/Icon-76@2x.png'
 				};
-				var notification = new Notification("New message!", ntfData);
+				var randomTitle = ntfTitles[Math.floor(Math.random() * ntfTitles.length)];
+				var notification = new Notification(randomTitle, ntfData);
 				setTimeout(notification.close.bind(notification), 5000);
 			});
 		}
