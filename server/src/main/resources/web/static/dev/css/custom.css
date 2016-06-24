@@ -57,6 +57,7 @@ section.footer.bg-image-0  a {
 
 section.solid {
 	background-color: #565695;
+	background-image: linear-gradient(140deg, #565695,#565695,#159957);
 }
 
 section.solid h1 a {
