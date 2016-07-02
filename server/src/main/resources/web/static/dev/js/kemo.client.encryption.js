@@ -43,12 +43,19 @@ var kemo = function(kemo) {
 		assertString('message', message);
 		// Generate random IV
 		var iv = forge.random.getBytesSync(kemo.encryption.config.IV_SIZE);
+		// Encode to base64 given key as string using function correctly
+		// handling special characters
+		// WARN: forge.js base64 function cannot be used here
+		var keyBase64 = kemo.core.base64_encode(key);
 		// Prepare encryption component
-		var cipher = forge.cipher.createCipher(kemo.encryption.config.ALGORITHM, toKeyBytes(key));
+		var cipher = forge.cipher.createCipher(kemo.encryption.config.ALGORITHM, toKeyBytes(keyBase64));
 		cipher.start({
 			iv : iv
 		});
-		cipher.update(forge.util.createBuffer(message, kemo.encryption.config.ENCODING));
+		// Convert to base64 before encryption
+		var messageBase64 = kemo.core.base64_encode(message)
+		// Encrypt
+		cipher.update(forge.util.createBuffer(messageBase64, kemo.encryption.config.ENCODING));
 		// Get encrypted result
 		var encrMessageBytes = cipher.output.getBytes();
 		// Cleanup encryption component
@@ -75,23 +82,38 @@ var kemo = function(kemo) {
 		var iv = encryptedBytes.slice(0, kemo.encryption.config.IV_SIZE);
 		// Rest of encrypted content represents message content
 		var encryptedData = forge.util.createBuffer(encryptedBytes.slice(kemo.encryption.config.IV_SIZE));
+		// Encode to base64 given key as string using function correctly
+		// handling special characters
+		// WARN: forge.js base64 function cannot be used here
+		var keyBase64 = kemo.core.base64_encode(key);
 		// Prepare decryption component
-		var decipher = forge.cipher.createDecipher(kemo.encryption.config.ALGORITHM, toKeyBytes(key));
+		var decipher = forge.cipher.createDecipher(kemo.encryption.config.ALGORITHM, toKeyBytes(keyBase64));
 		decipher.start({
 			iv : iv
 		});
 		decipher.update(encryptedData);
-		// Get decryption result
-		var decryptedBytes = forge.util.decodeUtf8(decipher.output.getBytes());
+		// Get decryption result which is in base64
+		var decryptedBytesBase64 = forge.util.decodeUtf8(decipher.output.getBytes());
 		// Cleanup decryption component
 		decipher.finish();
+		// Decode base64 into readable message
+		var decryptedBytes = kemo.core.base64_decode(decryptedBytesBase64);
 		return decryptedBytes;
 	};
 
 	// Support function to create communication address from key
 	kemo.encryption.keyToAddress = function(key) {
-		var keyStr = key ? "littlebitof" + key + "salt" : "defaultkey";
-		return encodeURIComponent(forge.util.encode64(forge.md.sha256.create().update(keyStr).digest().getBytes()));
+		var saltedKey = key ? "littlebitof" + key + "salt" : "defaultkey";
+		// Encode to base64 given key as string using function correctly
+		// handling special characters
+		// WARN: forge.js base64 function cannot be used here
+		var saltedKeyBase64 = kemo.core.base64_encode(saltedKey);
+		// Create hash
+		var hashStr = forge.md.sha256.create().update(saltedKeyBase64).digest().getBytes();
+		// Use forge base64 implementation only on bytes string content
+		var base64Hash = forge.util.encode64(hashStr);
+		// Encode into URL acceptable form
+		return encodeURIComponent(base64Hash);
 	};
 
 	return kemo;
