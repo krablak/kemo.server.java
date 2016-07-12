@@ -6,4 +6,4 @@ pipelines:
     - step:
         script:
           - gradle --version
-          - gradle clean build
+          - gradle test
