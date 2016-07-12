@@ -1,0 +1,9 @@
+# using gradle as build tool ..
+image: qlik/gradle
+ 
+pipelines:
+  default:
+    - step:
+        script:
+          - gradle --version
+          - gradle clean build
