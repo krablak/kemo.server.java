@@ -20,8 +20,8 @@ var kemo = function(kemo) {
 	};
 
 	var saltKey = function(key) {
-		return "clientenc" + key + "salt";
-	};
+		return kemo.encryption.saltEncKey(key);
+	}
 
 	// Simple wrapper over encryption part
 	var encrypt = function(key, data) {

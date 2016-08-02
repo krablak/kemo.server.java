@@ -103,7 +103,7 @@ var kemo = function(kemo) {
 
 	// Support function to create communication address from key
 	kemo.encryption.keyToAddress = function(key) {
-		var saltedKey = key ? "littlebitof" + key + "salt" : "defaultkey";
+		var saltedKey = kemo.encryption.saltAddressKey(key);
 		// Encode to base64 given key as string using function correctly
 		// handling special characters
 		// WARN: forge.js base64 function cannot be used here
@@ -115,6 +115,44 @@ var kemo = function(kemo) {
 		// Encode into URL acceptable form
 		return encodeURIComponent(base64Hash);
 	};
+
+	// Salts given key for path address creation
+	kemo.encryption.saltAddressKey = function(key) {
+		if (key === null || key === undefined || key === "") {
+			return "b8af31bea5a94d1582c53cf602bb19ab";
+		} else if (key.length === 1) {
+			var base64Key = kemo.core.base64_encode(key);
+			return "37bc92fbe3a8425ba0a2902ceb4383aa" + base64Key + "b7fa709330484789af66bbbaadfddc51";
+		} else {
+			var base64Key = kemo.core.base64_encode(key);
+			var sessPathKeys = "";
+			for (var i = 0; i < base64Key.length; i++) {
+				if (i % 2 === 1) {
+					sessPathKeys = sessPathKeys.concat(base64Key[i]);
+				}
+			}
+			return "1413ef72661a47c99724d9ec13a80fdf" + sessPathKeys + "734cc96c37244fd9a20336509dfd28b4";
+		}
+	}
+	
+	// Salts given key for encryption
+	kemo.encryption.saltEncKey = function(key) {
+		if (key === null || key === undefined || key === "") {
+			return "e79a713eec5e4d89991c0428efd5704a";
+		} else if (key.length === 1) {
+			var base64Key = kemo.core.base64_encode(key);
+			return "a36fd8ab8ae04a38b7c04c877c6f39e9" + base64Key + "b7a9bd24b0314235aeb912c501a829a5";
+		} else {
+			var base64Key = kemo.core.base64_encode(key);
+			var sessPathKeys = "";
+			for (var i = 0; i < base64Key.length; i++) {
+				if (i % 2 === 0) {
+					sessPathKeys = sessPathKeys.concat(base64Key[i]);
+				}
+			}
+			return "caf8069bd06145e3b926fa23c2fc419e" + sessPathKeys + "efbde326ef20437389a65d8f776f32dc";
+		}
+	}
 
 	return kemo;
 }(kemo || {});
