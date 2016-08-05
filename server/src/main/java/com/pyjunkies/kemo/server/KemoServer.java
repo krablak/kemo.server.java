@@ -3,7 +3,7 @@ package com.pyjunkies.kemo.server;
 import static com.pyjunkies.kemo.server.util.CommandLineParams.read;
 import static com.pyjunkies.kemo.server.util.HandlerUtils.accessLog;
 import static com.pyjunkies.kemo.server.util.HandlerUtils.addCacheHeaders;
-import static com.pyjunkies.kemo.server.util.HandlerUtils.addSecurityHeaders;
+import static com.pyjunkies.kemo.server.util.HandlerUtils.addHeaders;
 import static io.undertow.servlet.Servlets.servlet;
 import static java.util.Arrays.asList;
 
@@ -16,6 +16,7 @@ import com.pyjunkies.kemo.server.servlet.ChatServlet;
 import com.pyjunkies.kemo.server.servlet.EmbeddedChatServlet;
 import com.pyjunkies.kemo.server.servlet.WelcomeServlet;
 import com.pyjunkies.kemo.server.util.CommandLineParams;
+import com.pyjunkies.kemo.server.util.HandlerUtils.Constants;
 import com.pyjunkies.kemo.server.websocket.MessagingWebSocketEndpoint;
 
 import io.undertow.Handlers;
@@ -84,20 +85,23 @@ public class KemoServer {
 				.addInitialHandlerChainWrapper(addCacheHeaders(".js", ".css", ".ico", ".png", ".jpg"))
 				.setDeploymentName("kemo.war");
 
-		// Set responses security headers
-		if (isProductionMode) {
-			builder.addInitialHandlerChainWrapper(addSecurityHeaders(
-					"default-src 'self' 'unsafe-eval' https://kemoundertow-krablak.rhcloud.com/; "
-							+ "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; "
-							+ "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; "
-							+ "connect-src 'self' ws://kemoundertow-krablak.rhcloud.com wss://kemoundertow-krablak.rhcloud.com:8443;"));
-		} else {
-			builder.addInitialHandlerChainWrapper(addSecurityHeaders(
-					"default-src 'self 'unsafe-eval'; "
-							+ "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; "
-							+ "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; "
-							+ "connect-src 'self' ws://localhost:8080 wss://localhost:8080;"));
-		}
+		// Add global security headers
+		builder.addInitialHandlerChainWrapper(addHeaders((exchange) -> {
+			if (isProductionMode) {
+				exchange.getResponseHeaders().add(Constants.ResponseHeader.CONTENT_SECURITY_POLICY,
+						"default-src 'self' 'unsafe-eval' https://kemoundertow-krablak.rhcloud.com/; "
+								+ "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; "
+								+ "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; "
+								+ "connect-src 'self' ws://kemoundertow-krablak.rhcloud.com wss://kemoundertow-krablak.rhcloud.com:8443;");
+				exchange.getResponseHeaders().add(Constants.ResponseHeader.HSTS, "max-age=31536000");
+			} else {
+				exchange.getResponseHeaders().add(Constants.ResponseHeader.CONTENT_SECURITY_POLICY,
+						"default-src 'self 'unsafe-eval'; "
+								+ "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; "
+								+ "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; "
+								+ "connect-src 'self' ws://localhost:8080 wss://localhost:8080;");
+			}
+		}));
 
 		// When access log configuration is present add logging
 		accessLogDir.ifPresent(logDirPath -> {

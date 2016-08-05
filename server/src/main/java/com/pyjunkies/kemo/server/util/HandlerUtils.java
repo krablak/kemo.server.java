@@ -4,10 +4,12 @@ import static com.pyjunkies.kemo.server.logging.AccessLogWriterUtils.toMessage;
 import static io.undertow.util.HttpString.tryFromString;
 
 import java.util.Date;
+import java.util.function.Consumer;
 
 import com.pyjunkies.kemo.server.logging.AccessLogWriter;
 
 import io.undertow.server.HandlerWrapper;
+import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
 
 /**
@@ -21,11 +23,12 @@ public class HandlerUtils {
 	/**
 	 * Utils related constants.
 	 */
-	interface Constants {
-		interface ResponseHeader {
+	public interface Constants {
+		public interface ResponseHeader {
 			HttpString CACHE_CONTROL = tryFromString("Cache-Control");
 			HttpString EXPIRES = tryFromString("Expires");
 			HttpString CONTENT_SECURITY_POLICY = tryFromString("Content-Security-Policy");
+			HttpString HSTS = tryFromString("Strict-Transport-Security");
 		}
 	}
 
@@ -52,13 +55,25 @@ public class HandlerUtils {
 		};
 	}
 
-	public static HandlerWrapper addSecurityHeaders(String contentSecPolicy) {
+	/**
+	 * Common way of adding headers into all responses.
+	 * 
+	 * @param addHeadersFn
+	 *            functions responsible for headers adding.
+	 * @return wrapper instance to be used by server builder.
+	 */
+	public static HandlerWrapper addHeaders(Consumer<HttpServerExchange> addHeadersFn) {
 		return (handler) -> {
 			return (exchange) -> {
-				// Handle request
-				handler.handleRequest(exchange);
-				// Add headers
-				exchange.getResponseHeaders().add(Constants.ResponseHeader.CONTENT_SECURITY_POLICY, contentSecPolicy);
+				try {
+					// Handle request
+					handler.handleRequest(exchange);
+				} finally {
+					// Add headers in all cases
+					if (addHeadersFn != null) {
+						addHeadersFn.accept(exchange);
+					}
+				}
 			};
 		};
 	}
