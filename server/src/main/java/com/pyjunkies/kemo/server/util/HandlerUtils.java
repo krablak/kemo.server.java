@@ -8,8 +8,6 @@ import java.util.Date;
 import com.pyjunkies.kemo.server.logging.AccessLogWriter;
 
 import io.undertow.server.HandlerWrapper;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HttpString;
 
 /**
@@ -27,6 +25,7 @@ public class HandlerUtils {
 		interface ResponseHeader {
 			HttpString CACHE_CONTROL = tryFromString("Cache-Control");
 			HttpString EXPIRES = tryFromString("Expires");
+			HttpString CONTENT_SECURITY_POLICY = tryFromString("Content-Security-Policy");
 		}
 	}
 
@@ -42,48 +41,47 @@ public class HandlerUtils {
 	 * @return ready to use cache control adding wrapper.
 	 */
 	public static HandlerWrapper addCacheHeaders(String... endsWith) {
-		return new HandlerWrapper() {
-			@Override
-			public HttpHandler wrap(final HttpHandler handler) {
-				return new HttpHandler() {
-					@Override
-					public void handleRequest(final HttpServerExchange exchange) throws Exception {
-						handler.handleRequest(exchange);
-						if (endsWith(exchange.getRelativePath(), endsWith)) {
-							exchange.getResponseHeaders().add(Constants.ResponseHeader.CACHE_CONTROL, "max-age=315360000, public");
-							exchange.getResponseHeaders().add(Constants.ResponseHeader.EXPIRES, "Thu, 31 Dec 2037 23:55:55 GMT");
-						}
-					}
-				};
-			}
+		return (handler) -> {
+			return (exchange) -> {
+				handler.handleRequest(exchange);
+				if (endsWith(exchange.getRelativePath(), endsWith)) {
+					exchange.getResponseHeaders().add(Constants.ResponseHeader.CACHE_CONTROL, "max-age=315360000, public");
+					exchange.getResponseHeaders().add(Constants.ResponseHeader.EXPIRES, "Thu, 31 Dec 2037 23:55:55 GMT");
+				}
+			};
+		};
+	}
+
+	public static HandlerWrapper addSecurityHeaders(String contentSecPolicy) {
+		return (handler) -> {
+			return (exchange) -> {
+				// Handle request
+				handler.handleRequest(exchange);
+				// Add headers
+				exchange.getResponseHeaders().add(Constants.ResponseHeader.CONTENT_SECURITY_POLICY, contentSecPolicy);
+			};
 		};
 	}
 
 	public static HandlerWrapper accessLog(String logDirPath, String... excludeStartsWith) {
 		// Access log writer
-		final AccessLogWriter logWriter = new AccessLogWriter(logDirPath);
+		AccessLogWriter logWriter = new AccessLogWriter(logDirPath);
 		// Prepare wrapper instance
-		return new HandlerWrapper() {
-			@Override
-			public HttpHandler wrap(final HttpHandler handler) {
-				return new HttpHandler() {
-					@Override
-					public void handleRequest(final HttpServerExchange exchange) throws Exception {
-						final long startTime = new Date().getTime();
-						try {
-							// Handle request
-							handler.handleRequest(exchange);
-						} finally {
-							final long endTime = new Date().getTime();
-							// Exclude requests starting with excluded paths
-							if (!startsWith(exchange.getRelativePath(), excludeStartsWith)) {
-								// Log request
-								logWriter.write(toMessage(exchange, endTime - startTime));
-							}
-						}
+		return (handler) -> {
+			return (exchange) -> {
+				final long startTime = new Date().getTime();
+				try {
+					// Handle request
+					handler.handleRequest(exchange);
+				} finally {
+					final long endTime = new Date().getTime();
+					// Exclude requests starting with excluded paths
+					if (!startsWith(exchange.getRelativePath(), excludeStartsWith)) {
+						// Log request
+						logWriter.write(toMessage(exchange, endTime - startTime));
 					}
-				};
-			}
+				}
+			};
 		};
 	}
 

@@ -7,7 +7,7 @@ var kemo = function(kemo) {
 	// Communication module configuration
 	kemo.client.comm.config = {
 		// Flag says if audit logging on module level is enabled
-		auditEnabled : true,
+		auditEnabled : false,
 		// Timeout for regular connection check
 		checkTimeout : 15000,
 		// Time out for reconnect attempt after error

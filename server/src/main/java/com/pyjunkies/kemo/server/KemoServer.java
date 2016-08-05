@@ -3,6 +3,7 @@ package com.pyjunkies.kemo.server;
 import static com.pyjunkies.kemo.server.util.CommandLineParams.read;
 import static com.pyjunkies.kemo.server.util.HandlerUtils.accessLog;
 import static com.pyjunkies.kemo.server.util.HandlerUtils.addCacheHeaders;
+import static com.pyjunkies.kemo.server.util.HandlerUtils.addSecurityHeaders;
 import static io.undertow.servlet.Servlets.servlet;
 import static java.util.Arrays.asList;
 
@@ -59,8 +60,6 @@ public class KemoServer {
 		PathHandler path = Handlers.path();
 		Undertow server = Undertow.builder()
 				.addHttpListener(8080, bindAddress)
-				// .addHttpsListener(8443, "localhost",
-				// createSslContext("/ssl-keystore.jks", "password"))
 				.setHandler(path)
 				.setServerOption(UndertowOptions.ENABLE_HTTP2, Boolean.TRUE)
 				.build();
@@ -84,6 +83,21 @@ public class KemoServer {
 						.addMapping("/embedded"))
 				.addInitialHandlerChainWrapper(addCacheHeaders(".js", ".css", ".ico", ".png", ".jpg"))
 				.setDeploymentName("kemo.war");
+
+		// Set responses security headers
+		if (isProductionMode) {
+			builder.addInitialHandlerChainWrapper(addSecurityHeaders(
+					"default-src 'self' 'unsafe-eval' https://kemoundertow-krablak.rhcloud.com/; "
+							+ "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; "
+							+ "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; "
+							+ "connect-src 'self' ws://kemoundertow-krablak.rhcloud.com wss://kemoundertow-krablak.rhcloud.com:8443;"));
+		} else {
+			builder.addInitialHandlerChainWrapper(addSecurityHeaders(
+					"default-src 'self 'unsafe-eval'; "
+							+ "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; "
+							+ "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; "
+							+ "connect-src 'self' ws://localhost:8080 wss://localhost:8080;"));
+		}
 
 		// When access log configuration is present add logging
 		accessLogDir.ifPresent(logDirPath -> {

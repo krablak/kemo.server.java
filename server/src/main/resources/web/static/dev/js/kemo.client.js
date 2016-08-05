@@ -60,10 +60,10 @@ var kemo = function(kemo) {
 		window.addEventListener('focus', focusOnParent);
 		window.addEventListener('blur', focusOnParent);
 
-		// Plan connection check roundtrip
+		// Plan next connection check
 		setTimeout(messaging.connectionCheck, 5000);
 
-		// Puhlish references to client modul
+		// Publish references to client module
 		kemo.client.chatUi = chatUi;
 		kemo.client.messaging = messaging;
 	};
