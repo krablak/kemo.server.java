@@ -9,69 +9,43 @@
 <title>kemo.rocks</title> {{&header_html}}
 </head>
 <body>
-	<section class="welcome solid">
+	<section class="welcome-big bg-image-0 header">
 		<div class="container">
 			<div class="row">
 				<h1>
 					<a href="/">kemo<b>.</b>rocks
 					</a>
 				</h1>
+				<h3>Simple secure anonymous messaging</h3>
 			</div>
-		</div>
-	</section>
-	<section class="welcome-big bg-image-0">
-		<div class="container">
 			<div class="row">
-				<div class="one-half column">
-					<h3 class="hero-heading">Simple secure anonymous messaging</h3>
-					<a class="button button-primary" href="/chat">Start web client</a> <a class="button" href="#">OS X client</a>
+				<div class="twelve column">
+					<p>For everyone who is tired of all the messaging services storing and analyzing their data. Kemo is completely anonymous and your data are not stored anywhere. Only you and people with same secret key can read your messages. Enjoy.</p>
+				</div>
+			</div>
+			<div class="row row-screenshot">
+				<div class="twelve column">
+					<img class="screenshot" src="/static/images/window-1.png">
+				</div>
+			</div>
+			<div class="row">
+				<div class="two-half column">
+					<a class="button button-primary" href="/static/download/KemoApp.zip">Download OS X client <small>(alpha)</small></a> <a class="button button-primary" href="/chat">Start web client</a>
+				</div>
+			</div>
+			<div class="row row-footer">
+				<div class="two-half column">
+					<p>
+						In case of any questions contact us at <a href="mailto:team@kemo.rocks">team@kemo.rocks</a>. Your feedback is welcome.
+					</p>
+					<p>
+						All project news and releases are published at our <a href="http://blog.kemo.rocks">blog</a>.
+					</p>
 				</div>
 			</div>
 		</div>
 	</section>
-	<div class="container">
-		<section class="welcome">
-			<div class="row">
-				<h2>Anonymous</h2>
-				<p>
-					No user accounts, no nicknames or anything what can identify any user. To improve your privacy we recommend to use <a href="https://www.torproject.org/projects/torbrowser.html.en">Tor browser</a>.
-				</p>
-				<h2>Secure</h2>
-				<p>Encrypted messaging using secured transport channel. No messages or keys are stored out of your computer. It's only up to you how strong will be your keys and who will know it.</p>
-				<h2>Simple</h2>
-				<p>No registration or installation is required. Just <a href="/chat">open kemo web client</a> and chat.</p>
-			</div>
-		</section>
-	</div>
-	<section class="welcome-big solid">
-		<div class="container">
-			<div class="row">
-				<h2>Get Started</h2>
-				<ul>
-					<li>Choose your key and distribute it to chat participants</li>
-					<li>Open kemo.rocks chat using url <a href="/chat">https://kemo.rocks/chat</a></li>
-					<li>Fill key into secret key field and start chatting</li>
-				</ul>
-			</div>
-		</div>
-	</section>
-	<div class="container">
-		<section class="welcome">
-			<div class="row">
-				<h2>Want More?</h2>
-				<p>
-					In case of any questions contact us at <a href="mailto:team@kemo.rocks">team@kemo.rocks</a>. Your feedback is welcome.
-				</p>
-				<p>Project is still in development phase and current version is just MVP to prove that simple secure messaging platform is possible.</p>
-				<p>
-					All project news and releases are published at our <a href="http://blog.kemo.rocks">blog.kemo.rocks</a>.
-				</p>
-			</div>
-		</section>
-	</div>
-	<section class="footer welcome-big bg-image-0">{{&footer_html}}</section>
+
 </body>
-{{^prod_mode}}
-{{/prod_mode}} {{#prod_mode}}
-{{/prod_mode}}
+{{^prod_mode}} {{/prod_mode}} {{#prod_mode}} {{/prod_mode}}
 </html>

@@ -24,8 +24,6 @@ task buildFrontend(){
 				"minifyNormalizeCss",
 				"combineKemoCss",
 				"minifyKemoCss",
-				"minifyMidnightThemeCss",
-				"minifyAppleBlueThemeCss",
 				"minifyBigImgThemeCss",
 				"combineAllChatJs"
 				]
@@ -125,18 +123,6 @@ task minifyKemoCss(type: minifyCss.class) {
 	dependsOn = ['combineKemoCss']
 	source = "${buildDir}/resources/combine/kemo.all.css"
     dest = file("${resProdDir}/css/kemo.all.min.css")
-}
-
-task minifyMidnightThemeCss(type: minifyCss.class) {
-	dependsOn = ['deleteProdResourcesTask']
-	source = "${resDir}/css/theme-midnight.css"
-    dest = file("${resProdDir}/css/theme-midnight.min.css")
-}
-
-task minifyAppleBlueThemeCss(type: minifyCss.class) {
-	dependsOn = ['deleteProdResourcesTask']
-	source = "${resDir}/css/theme-apple-blue.css"
-    dest = file("${resProdDir}/css/theme-apple-blue.min.css")
 }
 
 task minifyBigImgThemeCss(type: minifyCss.class) {

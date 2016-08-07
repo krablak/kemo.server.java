@@ -4,16 +4,21 @@
 **/
 body {
 	background-color: #FFFFFF;
-    color: #333;
+    color: white;
     letter-spacing: 0.07em;
 }
 
+section.welcome-big p {
+	color: white; 
+	font-size: 16px;
+}
+
 h1 a {
-    color: #333;
+    color: white;
 }
 
 h1 a:hover {
-    color: #333;
+    color: white;
 }
 
 a {
