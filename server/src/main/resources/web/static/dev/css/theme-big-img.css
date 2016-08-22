@@ -88,6 +88,10 @@ input[type="email"], input[type="number"], input[type="search"], input[type="tex
 	border: 1px solid #eeeeee;
 }
 
+.messages-box div {
+	color: #333;
+}
+
 .messages-box div.sent {
 	color: #82828B;
 }
