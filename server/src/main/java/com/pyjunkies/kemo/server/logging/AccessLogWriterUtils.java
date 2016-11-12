@@ -84,8 +84,9 @@ public final class AccessLogWriterUtils {
 	public static String toMessage(HttpServerExchange exchange, long duration) {
 		StringBuilder strBlrd = new StringBuilder();
 		if (exchange != null) {
+			Date curDate = new Date();
 			// Date time
-			strBlrd.append(format("%1$tY-%1$tm-%1$td\t%1$tH:%1$tM:%1$tS:%1$tL", new Date()));
+			strBlrd.append(format("%1$tY-%1$tm-%1$td\t%1$tH:%1$tM:%1$tS:%1$tL", curDate));
 			strBlrd.append("\t");
 			// HTTP method GET/POST etc.
 			strBlrd.append(exchange.getRequestMethod().toString());
@@ -93,11 +94,14 @@ public final class AccessLogWriterUtils {
 			// Accessed Relative path
 			strBlrd.append(exchange.getRelativePath());
 			strBlrd.append("\t");
+			// Query string
+			strBlrd.append(exchange.getQueryString());
+			strBlrd.append("\t");
 			// Measured request duration in ms
 			strBlrd.append(duration);
 			strBlrd.append("\t");
 			// Source IP
-			strBlrd.append(exchange.getConnection().getPeerAddress().toString());
+			strBlrd.append(exchange.getSourceAddress().toString());
 			strBlrd.append("\t");
 			// Language
 			String language = exchange.getRequestHeaders().getFirst("Accept-Language");
