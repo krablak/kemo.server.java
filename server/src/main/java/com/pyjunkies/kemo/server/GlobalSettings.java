@@ -1,5 +1,7 @@
 package com.pyjunkies.kemo.server;
 
+import java.util.Optional;
+
 /**
  * Provides global application settings.
  * 
@@ -17,5 +19,10 @@ public class GlobalSettings {
 	 * Static resources version.
 	 */
 	public static String resourcesVersion = String.valueOf(System.currentTimeMillis());
+
+	/**
+	 * Directory for storing logs and error reports.
+	 */
+	public static Optional<String> accessLogDir = Optional.empty();
 
 }

@@ -77,7 +77,7 @@ public class AccessLogWriter {
 		return new Runnable() {
 			@Override
 			public void run() {
-				try (Writer fileWriter = new FileWriter(logFileOpt.get())) {
+				try (Writer fileWriter = new FileWriter(logFileOpt.get(), true)) {
 					while (true) {
 						log.trace("Started logging thread.");
 						while (true) {

@@ -36,6 +36,11 @@ var kemo = function(kemo) {
 		} catch (err) {
 			// Encryption fails for whatever reason.. just log it
 			console.error("Unexpected error when decrypting received message.", err)
+			// Report decryption error
+			kemo.core.report_error({
+				message : "Unexpected error when decrypting received message.",
+				error : err
+			});
 		}
 		return decryptedData;
 	};
@@ -95,11 +100,31 @@ var kemo = function(kemo) {
 			try {
 				self.key = key;
 				// Close existing web socket connection
-				if (self.ws && (self.ws.readyState === WebSocket.OPEN || self.ws.readyState === WebSocket.CONNECTING)) {
+				if (self.ws && self.ws.readyState !== WebSocket.CLOSED) {
 					auditLog("CONNECT_CLOSING", self);
 					self.ws.onmessage = function() {
 					};
-					self.ws.close();
+					if (self.ws.readyState === WebSocket.OPEN) {
+						try {
+							self.ws.close();
+						} catch (err) {
+							// Let closing silently fail
+							auditLog("CLOSING_ERROR", self);
+						}
+					} else if (self.ws.readyState === WebSocket.CONNECTING) {
+						// Plan delayed close in future for current websocket
+						var closeWs = self.ws;
+						setTimeout(function() {
+							if (self.ws.readyState !== WebSocket.CLOSING && self.ws.readyState !== WebSocket.CLOSED) {
+								try {
+									closeWs.close();
+								} catch (err) {
+									// Let closing silently fail
+									auditLog("DLY_CLOSING_ERROR", self);
+								}
+							}
+						}, 5000);
+					}
 				}
 				// Open new connection with given key
 				self.ws = new WebSocket(resolveUrl(key));
@@ -114,13 +139,23 @@ var kemo = function(kemo) {
 					}
 				}
 				// On error perform reconnect
-				self.ws.onerror = function() {
+				self.ws.onerror = function(err) {
 					auditLog("ONERROR", self);
 					setTimeout(self.reconnect, kemo.client.comm.config.onErrorReconnect);
+					// Report decryption error
+					kemo.core.report_error({
+						message : "WebSocket connection error.",
+						error : err
+					});
 				};
 			} catch (err) {
 				// Do not propagate up... silently fails.
 				auditLog("UNEXPECTEDERROR", self, err);
+				// Report decryption error
+				kemo.core.report_error({
+					message : "Unexpected error when connecting to server.",
+					error : err
+				});
 			}
 		};
 

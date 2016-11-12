@@ -48,7 +48,7 @@ public final class AccessLogWriterUtils {
 	 *            log file name supplier.
 	 * @return optional with ready to use log file.
 	 */
-	static Optional<File> getOrCreateLogFile(String logDirPath, Supplier<String> fileNameSupp) {
+	public static Optional<File> getOrCreateLogFile(String logDirPath, Supplier<String> fileNameSupp) {
 		Optional<File> logFileOpt = Optional.empty();
 		if (logDirPath != null && fileNameSupp != null) {
 			File logDir = new File(logDirPath);

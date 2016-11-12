@@ -34,5 +34,20 @@ var kemo = function(kemo) {
 		}
 	}
 
+	// Send error report to kemo server
+	kemo.core.report_error = function(details) {
+		var report = {
+			details : details
+		};
+		for ( var k in navigator) {
+			report[k] = navigator[k];
+		}
+		var http = new XMLHttpRequest();
+		var url = "/error/report-agent";
+		http.open("POST", url, true);
+		http.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+		http.send(JSON.stringify(report));
+	};
+
 	return kemo;
 }(kemo || {});
