@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -32,9 +33,14 @@ public class AccessLogWriter {
 	}
 
 	/**
-	 * Log file.
+	 * Path to logging directory
 	 */
-	private final Optional<File> logFileOpt;
+	private final String pathToLogDir;
+	
+	/**
+	 * Last used file for logging.
+	 */
+	private Optional<File> logFileOpt = Optional.empty();
 
 	/**
 	 * Queue with message waiting to be stored in file.
@@ -59,15 +65,11 @@ public class AccessLogWriter {
 	 */
 	public AccessLogWriter(String pathToLogDir) {
 		log.debugf("Creating acces log on in directory path: '%s'", pathToLogDir);
-		// Get access to log file
-		this.logFileOpt = getOrCreateLogFile(pathToLogDir, AccessLogWriterUtils::createLogFileName);
-		// When file is available run endless log writing loop
-		if (this.logFileOpt.isPresent()) {
-			if (execService.isShutdown() || execService.isTerminated()) {
-				execService = Executors.newFixedThreadPool(1);
-			}
-			execService.submit(loggingRunnable());
+		this.pathToLogDir = pathToLogDir;
+		if (execService.isShutdown() || execService.isTerminated()) {
+			execService = Executors.newFixedThreadPool(1);
 		}
+		execService.submit(loggingRunnable());
 	}
 
 	/**
@@ -77,25 +79,43 @@ public class AccessLogWriter {
 		return new Runnable() {
 			@Override
 			public void run() {
-				try (Writer fileWriter = new FileWriter(logFileOpt.get(), true)) {
-					while (true) {
-						log.trace("Started logging thread.");
-						while (true) {
-							String item = AccessLogWriter.this.inputQueue.poll();
-							while (item != null) {
-								fileWriter.write(item + "\n");
-								item = AccessLogWriter.this.inputQueue.poll();
+				// Remember current day for rolling log files
+				int rollingTimeFlag = ZonedDateTime.now().getDayOfYear();
+
+				// Run endless loop for writing records from queue into log file
+				while (true) {
+					// Prepare log file for current day
+					Optional<File> newLogFileOpt = getOrCreateLogFile(AccessLogWriter.this.pathToLogDir, AccessLogWriterUtils::createLogFileName);
+					// Mark log file opt
+					AccessLogWriter.this.logFileOpt = newLogFileOpt;
+					if (newLogFileOpt.isPresent()) {
+						// Open log file and write records from queue
+						try (Writer fileWriter = new FileWriter(newLogFileOpt.get(), true)) {
+							log.trace("Started logging thread.");
+							while (true) {
+								String item = AccessLogWriter.this.inputQueue.poll();
+								while (item != null) {
+									fileWriter.write(item + "\n");
+									item = AccessLogWriter.this.inputQueue.poll();
+								}
+								fileWriter.flush();
+								// Wait some time for filling logs message queue
+								try {
+									Thread.sleep(Constants.DEFAULT_WRITE_INTERVAL);
+								} catch (InterruptedException e) {
+									log.error("Interrupted when waiting for next log writting loop.", e);
+								}
+								// Check if is not time for rolling log
+								if (ZonedDateTime.now().getDayOfYear() != rollingTimeFlag) {
+									break;
+								}
 							}
-							fileWriter.flush();
-							try {
-								Thread.sleep(Constants.DEFAULT_WRITE_INTERVAL);
-							} catch (InterruptedException e) {
-								log.error("Interrupted when waiting for next log writting loop.", e);
-							}
+						} catch (IOException ioex) {
+							log.error("Unexpected error when writing into access log.", ioex);
 						}
+					} else {
+						log.errorv("Log file was not created at path '%s' and access log will be not active.", pathToLogDir);
 					}
-				} catch (IOException ioex) {
-					log.error("Unexpected error when writing into access log.", ioex);
 				}
 			}
 		};
@@ -112,15 +132,6 @@ public class AccessLogWriter {
 		if (message != null && !this.markAsClosed) {
 			this.inputQueue.add(message);
 		}
-	}
-
-	/**
-	 * Returns reference to log file if present.
-	 * 
-	 * @return reference to log file.
-	 */
-	public Optional<File> getLogFile() {
-		return logFileOpt;
 	}
 
 	/**
@@ -141,6 +152,15 @@ public class AccessLogWriter {
 		// Shutdown thread
 		execService.shutdown();
 		log.debug("Access log writer closed.");
+	}
+
+	/**
+	 * Returns last used log file.
+	 * 
+	 * @return last used log file when available.
+	 */
+	public Optional<File> getLogFile() {
+		return this.logFileOpt;
 	}
 
 }

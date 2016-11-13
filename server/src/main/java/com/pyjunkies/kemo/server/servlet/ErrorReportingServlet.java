@@ -29,6 +29,7 @@ public class ErrorReportingServlet extends HttpServlet implements Servlet {
 
 	public static final Logger log = Logger.getLogger(ErrorReportingServlet.class);
 
+	@SuppressWarnings("unused")
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.debug("Received error report in request: '%s'");
