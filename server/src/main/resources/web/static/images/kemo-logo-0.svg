@@ -23,8 +23,17 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <defs
-     id="defs4" />
+  <defs>
+        <linearGradient id="skyGradient" x1="100%" y1="100%">
+          <stop offset="0%" stop-color="lightblue" stop-opacity=".5">
+            <animate attributeName="stop-color" values="lightblue;blue;red;red;black;red;red;purple;lightblue" dur="14s" repeatCount="indefinite" />
+          </stop>
+          <stop offset="100%" stop-color="lightblue" stop-opacity=".5">
+            <animate attributeName="stop-color" values="lightblue;orange;purple;purple;black;purple;purple;blue;lightblue" dur="14s" repeatCount="indefinite" />
+            <animate attributeName="offset" values=".95;.80;.60;.40;.20;0;.20;.40;.60;.80;.95" dur="14s" repeatCount="indefinite" />
+          </stop>
+        </linearGradient>
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"

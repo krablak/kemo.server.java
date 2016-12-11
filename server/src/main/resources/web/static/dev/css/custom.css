@@ -135,4 +135,7 @@ section.solid h1 a {
 		height: 450px;
 		border: 0px solid white;
 	}
+	h1 {
+		font-size: 5.0rem;
+	}
 }

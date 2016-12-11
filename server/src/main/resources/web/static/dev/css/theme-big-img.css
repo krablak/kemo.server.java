@@ -105,3 +105,35 @@ input[type="email"]:focus, input[type="number"]:focus, input[type="search"]:focu
 	input[type="password"]:focus, textarea:focus, select:focus {
 	border: 1px solid #565695;
 }
+
+/**
+* Logo animations.
+**/
+.blinking-ani {
+  fill: red;
+}
+
+.blinking-ani:hover {
+  animation: pulse 10s infinite;
+  -webkit-animation: pulse 10s infinite;
+}
+
+@keyframes pulse {
+  0%   { fill: #ff0000 }
+  17%  { fill: #ffff00 }
+  33%  { fill: #00ff00 }
+  50%  { fill: #00ffff }
+  67%  { fill: #0000ff }
+  83%  { fill: #ff00ff }
+  100% { fill: #ff0000 }
+}
+
+@-webkit-keyframes pulse {
+  0%   { fill: #ff0000 }
+  17%  { fill: #ffff00 }
+  33%  { fill: #00ff00 }
+  50%  { fill: #00ffff }
+  67%  { fill: #0000ff }
+  83%  { fill: #ff00ff }
+  100% { fill: #ff0000 }
+}
