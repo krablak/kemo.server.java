@@ -88,7 +88,14 @@
 			</div>			
 			<div class="row">
 				<div class="two-half column">
-					<a class="button button-primary" href="/static/download/KemoApp.zip">Download OS X client <small>(alpha)</small></a> <a class="button button-primary" href="/chat">Start web client</a>
+					{{^prod_mode}}
+					<a class="button button-primary" href="/static/download/KemoApp.zip">Download OS X client <small>(alpha)</small></a>
+					<a class="button button-primary" href="/chat">Start web client</a>  
+					{{/prod_mode}}					
+					{{#prod_mode}}
+					<a class="button button-primary" href="https://kemo.rocks/static/download/KemoApp.zip">Download OS X client <small>(alpha)</small></a>
+					<a class="button button-primary" href="https://kemo.rocks/chat">Start web client</a>
+					{{/prod_mode}}					
 				</div>
 			</div>
 			<div class="row row-footer">
