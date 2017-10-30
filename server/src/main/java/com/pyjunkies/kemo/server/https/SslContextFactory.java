@@ -1,5 +1,7 @@
 package com.pyjunkies.kemo.server.https;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyManagementException;
@@ -17,85 +19,99 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import static java.lang.String.format;
+
 public class SslContextFactory {
 
-	public final static TrustManager[] TRUST_ALL_CERTS = new X509TrustManager[] { new DummyTrustManager() };
+    public final static TrustManager[] TRUST_ALL_CERTS = new X509TrustManager[]{new DummyTrustManager()};
 
-	interface Constants {
-		String KEYSTORE_TYPE = "JKS";
-	}
+    interface Constants {
+        String KEYSTORE_TYPE = "JKS";
+    }
 
-	private SslContextFactory() {
-	}
+    private SslContextFactory() {
+    }
 
-	public static SSLContext createSslContext(String keyStoreName, String keyStorePassword) throws IOException {
-		KeyStore keyStore = loadKeyStore(keyStoreName, keyStorePassword);
+    public static SSLContext createSslContext(String keyStoreName, String keyStorePassword) throws IOException {
+        KeyStore keyStore = loadKeyStore(keyStoreName, keyStorePassword);
 
-		KeyManager[] keyManagers = buildKeyManagers(keyStore, keyStorePassword.toCharArray());
-		TrustManager[] trustManagers = buildTrustManagers(null);
+        KeyManager[] keyManagers = buildKeyManagers(keyStore, keyStorePassword.toCharArray());
+        TrustManager[] trustManagers = buildTrustManagers(null);
 
-		SSLContext sslContext;
-		try {
-			sslContext = SSLContext.getInstance("TLS");
-			sslContext.init(keyManagers, trustManagers, null);
-		} catch (NoSuchAlgorithmException | KeyManagementException exc) {
-			throw new IOException("Unable to create and initialise the SSLContext", exc);
-		}
+        SSLContext sslContext;
+        try {
+            sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(keyManagers, trustManagers, null);
+        } catch (NoSuchAlgorithmException | KeyManagementException exc) {
+            throw new IOException("Unable to create and initialise the SSLContext", exc);
+        }
 
-		return sslContext;
-	}
+        return sslContext;
+    }
 
-	private static KeyStore loadKeyStore(final String location, String storePassword) throws IOException {
-		try (InputStream stream = SslContextFactory.class.getResourceAsStream(location)) {
-			KeyStore loadedKeystore = KeyStore.getInstance(Constants.KEYSTORE_TYPE);
-			loadedKeystore.load(stream, storePassword.toCharArray());
-			return loadedKeystore;
-		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException exc) {
-			throw new IOException(String.format("Unable to load KeyStore %s", location), exc);
-		}
-	}
+    private static KeyStore loadKeyStore(final String location, String storePassword) throws IOException {
+        try (InputStream stream = resolveStream(location)) {
+            KeyStore loadedKeystore = KeyStore.getInstance(Constants.KEYSTORE_TYPE);
+            loadedKeystore.load(stream, storePassword.toCharArray());
+            return loadedKeystore;
+        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException exc) {
+            throw new IOException(format("Unable to load KeyStore '%s'", location), exc);
+        }
+    }
 
-	private static TrustManager[] buildTrustManagers(final KeyStore trustStore) throws IOException {
-		TrustManager[] trustManagers = null;
-		if (trustStore == null) {
-			try {
-				TrustManagerFactory trustManagerFactory = TrustManagerFactory
-						.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-				trustManagerFactory.init(trustStore);
-				trustManagers = trustManagerFactory.getTrustManagers();
-			} catch (NoSuchAlgorithmException | KeyStoreException exc) {
-				throw new IOException("Unable to initialise TrustManager[]", exc);
-			}
-		} else {
-			trustManagers = TRUST_ALL_CERTS;
-		}
-		return trustManagers;
-	}
+    private static InputStream resolveStream(final String location) throws IOException {
+        InputStream resStream = SslContextFactory.class.getResourceAsStream(location);
+        if (resStream == null) {
+            try {
+                resStream = new FileInputStream(location);
+            } catch (FileNotFoundException e) {
+                throw new IOException(format("Unable to load KeyStore from FS location: '%s'", location), e);
+            }
+        }
+        return resStream;
+    }
 
-	private static KeyManager[] buildKeyManagers(final KeyStore keyStore, char[] storePassword)
-			throws IOException {
-		KeyManager[] keyManagers;
-		try {
-			KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory
-					.getDefaultAlgorithm());
-			keyManagerFactory.init(keyStore, storePassword);
-			keyManagers = keyManagerFactory.getKeyManagers();
-		} catch (NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException exc) {
-			throw new IOException("Unable to initialise KeyManager[]", exc);
-		}
-		return keyManagers;
-	}
+    private static TrustManager[] buildTrustManagers(final KeyStore trustStore) throws IOException {
+        TrustManager[] trustManagers = null;
+        if (trustStore == null) {
+            try {
+                TrustManagerFactory trustManagerFactory = TrustManagerFactory
+                        .getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                trustManagerFactory.init(trustStore);
+                trustManagers = trustManagerFactory.getTrustManagers();
+            } catch (NoSuchAlgorithmException | KeyStoreException exc) {
+                throw new IOException("Unable to initialise TrustManager[]", exc);
+            }
+        } else {
+            trustManagers = TRUST_ALL_CERTS;
+        }
+        return trustManagers;
+    }
+
+    private static KeyManager[] buildKeyManagers(final KeyStore keyStore, char[] storePassword)
+            throws IOException {
+        KeyManager[] keyManagers;
+        try {
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory
+                    .getDefaultAlgorithm());
+            keyManagerFactory.init(keyStore, storePassword);
+            keyManagers = keyManagerFactory.getKeyManagers();
+        } catch (NoSuchAlgorithmException | UnrecoverableKeyException | KeyStoreException exc) {
+            throw new IOException("Unable to initialise KeyManager[]", exc);
+        }
+        return keyManagers;
+    }
 }
 
 class DummyTrustManager implements X509TrustManager {
 
-	public X509Certificate[] getAcceptedIssuers() {
-		return new X509Certificate[] {};
-	}
+    public X509Certificate[] getAcceptedIssuers() {
+        return new X509Certificate[]{};
+    }
 
-	public void checkClientTrusted(X509Certificate[] certs, String authType) {
-	}
+    public void checkClientTrusted(X509Certificate[] certs, String authType) {
+    }
 
-	public void checkServerTrusted(X509Certificate[] certs, String authType) {
-	}
+    public void checkServerTrusted(X509Certificate[] certs, String authType) {
+    }
 }

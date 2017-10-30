@@ -49,16 +49,9 @@ var kemo = function(kemo) {
 	var resolveUrl = function(key) {
 		var host = "";
 		if (location.protocol === "http:") {
-			if (location.port === "8080") {
-				// Probably local dev environment
-				host = "ws://" + location.host;
-			} else {
-				// Openshift on http
-				host = "ws://" + location.hostname + ":8000";
-			}
+			host = "ws://" + location.host;
 		} else {
-			// Openshift on https
-			host = "wss://" + location.hostname + ":8443";
+			host = "wss://" + location.hostname;
 		}
 		return host + "/messaging/" + keyToAddress(key);
 	};

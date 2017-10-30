@@ -14,7 +14,7 @@ apply plugin: 'eclipse'
 apply from: 'frontend.gradle'
 
 sourceCompatibility = 1.8
-version = '1.0'
+version = '1.1'
 
 task fatJar(type: Jar) {
 	manifest {
@@ -32,8 +32,8 @@ repositories {
 }
 
 dependencies {
-	compile('io.undertow:undertow-core:1.4.0.Final')
-	compile('io.undertow:undertow-websockets-jsr:1.4.0.Final')
+	compile('io.undertow:undertow-core:1.4.20.Final')
+	compile('io.undertow:undertow-websockets-jsr:1.4.20.Final')
 	compile('com.github.spullara.mustache.java:compiler:0.9.1')
 	testCompile group: 'junit', name: 'junit', version: '4.+'
 }

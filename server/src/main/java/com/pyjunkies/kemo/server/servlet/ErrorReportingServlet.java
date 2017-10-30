@@ -19,38 +19,45 @@ import com.pyjunkies.kemo.server.GlobalSettings;
 
 /**
  * Servlet for logging error reports sent by clients.
- * 
- * @author krablak
  *
+ * @author krablak
  */
 public class ErrorReportingServlet extends HttpServlet implements Servlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public static final Logger log = Logger.getLogger(ErrorReportingServlet.class);
+    public static final Logger log = Logger.getLogger(ErrorReportingServlet.class);
 
-	@SuppressWarnings("unused")
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		log.debug("Received error report in request: '%s'");
-		if (GlobalSettings.accessLogDir.isPresent()) {
-			try (InputStream reqStreamData = req.getInputStream()) {
-				getOrCreateLogFile(GlobalSettings.accessLogDir.get(), () -> "error-report.log").ifPresent(file -> {
-					try (Writer fileWriter = new FileWriter(file, true)) {
-						byte[] contents = new byte[1024];
-						int bytesRead = 0;
-						while ((bytesRead = req.getInputStream().read(contents)) != -1) {
-							fileWriter.write(new String(contents));
-							fileWriter.write("\n");
-						}
-					} catch (IOException e) {
-						log.error("Unexpected error when writing error report.", e);
-					}
-				});
-			}
-		} else {
-			log.error("Log directory is not set and error report cannot be stored.");
-		}
-	}
+    @SuppressWarnings("unused")
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        log.debug("Received error report in request: '%s'");
+        if (GlobalSettings.accessLogDir.isPresent()) {
+            try (InputStream reqStreamData = req.getInputStream()) {
+                getOrCreateLogFile(GlobalSettings.accessLogDir.get(), () -> "error-report.log").ifPresent(file -> {
+                    try (Writer fileWriter = new FileWriter(file, true)) {
+                        byte[] contents = new byte[1024];
+                        int bytesRead = 0;
+                        while ((bytesRead = req.getInputStream().read(contents)) != -1) {
+                            fileWriter.write(new String(contents));
+                            fileWriter.write("\n");
+                        }
+                    } catch (IOException e) {
+                        log.error("Unexpected error when writing error report.", e);
+                    }
+                });
+            }
+        } else {
+            try (InputStream reqStreamData = req.getInputStream()) {
+                byte[] contents = new byte[1024];
+                int bytesRead = 0;
+                while ((bytesRead = req.getInputStream().read(contents)) != -1) {
+                    System.out.write(contents);
+                    System.out.write("\n".getBytes());
+                }
+            }
+            log.warn("Log directory is not set and error report cannot be stored.");
+        }
+    }
 
 }
