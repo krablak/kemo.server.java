@@ -49,9 +49,9 @@ var kemo = function(kemo) {
 	var resolveUrl = function(key) {
 		var host = "";
 		if (location.protocol === "http:") {
-			host = "ws://" + location.host;
+			host = "ws://" + location.host + ":" + location.port;
 		} else {
-			host = "wss://" + location.hostname;
+			host = "wss://" + location.hostname  + ":" + location.port;
 		}
 		return host + "/messaging/" + keyToAddress(key);
 	};

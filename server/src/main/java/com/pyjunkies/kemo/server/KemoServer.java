@@ -6,11 +6,17 @@ import static com.pyjunkies.kemo.server.util.HandlerUtils.accessLog;
 import static com.pyjunkies.kemo.server.util.HandlerUtils.addCacheHeaders;
 import static com.pyjunkies.kemo.server.util.HandlerUtils.addHeaders;
 import static io.undertow.servlet.Servlets.servlet;
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
 
 import java.util.Optional;
 
 import com.pyjunkies.kemo.server.https.SslContextFactory;
+import com.pyjunkies.kemo.server.util.HttpsRedirectHandler;
+import com.pyjunkies.kemo.server.util.SslConfiguration;
+import io.undertow.server.HttpServerExchange;
+import io.undertow.server.handlers.RedirectHandler;
+import io.undertow.servlet.api.*;
 import org.jboss.logging.Logger;
 
 import com.pyjunkies.kemo.server.logging.LoggerInitiliazer;
@@ -27,9 +33,6 @@ import io.undertow.Undertow;
 import io.undertow.UndertowOptions;
 import io.undertow.server.DefaultByteBufferPool;
 import io.undertow.server.handlers.PathHandler;
-import io.undertow.servlet.api.DeploymentInfo;
-import io.undertow.servlet.api.DeploymentManager;
-import io.undertow.servlet.api.ServletContainer;
 import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
 import web.WebResourceManager;
 
@@ -50,7 +53,7 @@ public class KemoServer {
         CommandLineParams params = read(args);
 
         // Get bind address
-        String bindAddress = params.get("--bind").orElse("localhost");
+        String bindAddress = params.get("--bind").orElse("127.0.0.1");
         // Get port
         Integer port = params.getInt("--port").orElse(8080);
 
@@ -64,6 +67,10 @@ public class KemoServer {
 
         log.infof("Bind address : '%s'", bindAddress);
         log.infof("Production mode : '%s'", isProductionMode);
+
+        // Read SSL configuration
+        SslConfiguration sslConfiguration = new SslConfiguration(params);
+        log.infof("SSL configuration : '%s'", sslConfiguration);
 
         // Prepare server handlers path and Undertow server
         PathHandler path = Handlers.path();
@@ -88,7 +95,7 @@ public class KemoServer {
                         .addMapping("/embedded"))
                 .addServlet(servlet(ErrorReportingServlet.class)
                         .addMapping("/error/report-agent"))
-                .addInitialHandlerChainWrapper(addCacheHeaders(".js", ".css", ".ico", ".png", ".jpg"))
+                .addInitialHandlerChainWrapper(addCacheHeaders(".js", ".css", ".ico", ".png", ".jpg", ".gif"))
                 .setDeploymentName("kemo.war");
 
 
@@ -112,6 +119,7 @@ public class KemoServer {
 				 * HSTS, "max-age=31536000");
 				 */
             } else {
+
                 exchange.getResponseHeaders().add(Constants.ResponseHeader.CONTENT_SECURITY_POLICY,
                         "default-src 'self' 'unsafe-eval'; "
                                 + "img-src 'self'; "
@@ -119,7 +127,7 @@ public class KemoServer {
                                 + "frame-src 'self'; "
                                 + "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; "
                                 + "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; "
-                                + "connect-src 'self' ws://localhost:8080 wss://localhost:8080;");
+                                + format("connect-src 'self' ws://%s:%s wss://%s:%s;", bindAddress, port, bindAddress, sslConfiguration.isSslConfigured() ? sslConfiguration.getSslPortOpt().get() : port));
             }
         }));
 
@@ -134,16 +142,14 @@ public class KemoServer {
 
         // Prepare server
         Undertow.Builder builder = Undertow.builder()
-                .addHttpListener(port, bindAddress, path)
+                // Add handler on http or when SSL is configured add
+                .addHttpListener(port, bindAddress, sslConfiguration.isSslConfigured() ? new HttpsRedirectHandler(sslConfiguration.getSslPortOpt().get()) : path)
                 .setServerOption(UndertowOptions.ENABLE_HTTP2, Boolean.FALSE);
-        // Add SSL configuration
-        Optional<Integer> sslPortOpt = params.getInt("--sslport");
-        Optional<String> keyStoreOpt = params.get("--sslkeystore");
-        Optional<String> keyPassOpt = params.get("--sslpassword");
+
         // Continue only in case of all required config params
-        if (sslPortOpt.isPresent() && keyStoreOpt.isPresent() && keyPassOpt.isPresent()) {
-            SSLContext sslContext = createSslContext(keyStoreOpt.get(), keyPassOpt.get());
-            builder.addHttpsListener(sslPortOpt.get(), bindAddress, sslContext, path);
+        if (sslConfiguration.isSslConfigured()) {
+            SSLContext sslContext = createSslContext(sslConfiguration.getKeyStoreOpt().get(), sslConfiguration.getKeyPassOpt().get());
+            builder.addHttpsListener(sslConfiguration.getSslPortOpt().get(), bindAddress, sslContext, path);
         } else {
             log.warnf("SSL is not configured. Following parameters must be set: --sslport,--sslkeystore,--sslpassword");
         }
