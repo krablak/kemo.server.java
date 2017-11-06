@@ -1,0 +1,36 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>kemo.rocks</title> {{&header_html}}
+</head>
+<body>
+<section class="welcome solid">
+    <div class="container">
+        <div class="row">
+            <h1>
+                <a href="/">kemo<b>.</b>rocks
+                </a>
+            </h1>
+        </div>
+    </div>
+</section>
+<div class="container">
+    <section class="welcome">
+        <iframe src="/embedded" class="chat-embedded" frameborder="0"></iframe>
+    </section>
+</div>
+<section class="footer welcome-big solid">{{&footer_html}}</section>
+</body>
+{{^prod_mode}}
+    <script src="/static/dev/js/thirdparty/riot/riot.min.js?version={{res_version}}"></script>
+    <script src="/static/dev/js/kemo.core.js?version={{res_version}}"></script>
+    <script src="/static/dev/js/kemo.client.ext.js?version={{res_version}}"></script>
+    <script src="/static/dev/js/kemo.chat_page.js?version={{res_version}}"></script>
+{{/prod_mode}} {{#prod_mode}}
+    <script src="/static/prod/js/chat.all.min.js?version={{res_version}}"></script>
+{{/prod_mode}}
+</html>

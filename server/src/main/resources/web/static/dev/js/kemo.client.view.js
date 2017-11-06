@@ -21,22 +21,28 @@ var kemo = function(kemo) {
 					'kemo-chat',
 					'\
 			<div>\
-				<div class="row">\
-					<input type="text" kemo-type="username" placeholder="Place you username here..." value={username} onchange="{onUsernameChanged}" onblur="{onUsernameChanged}" class="four columns"/>\
-					<input type="password" kemo-type="key" placeholder="Place you secret key here..." value={key} onchange="{onKeyChanged}" onblur="{onKeyChanged}" class="eight columns"/>\
-				</div>\
-				<div class="row">\
-					<div kemo-type="messages" class="messages-box">\
-						<chat-line each={messages.items}></chat-line>\
+				<div class="fixed-panel top-panel">\
+				    <div class="row">\
+					    <input type="text" kemo-type="username" placeholder="Place you username here..." value={username} onchange="{onUsernameChanged}" onblur="{onUsernameChanged}" class="four columns"/>\
+					    <input type="password" kemo-type="key" placeholder="Place you secret key here..." value={key} onchange="{onKeyChanged}" onblur="{onKeyChanged}" class="eight columns"/>\
 					</div>\
 				</div>\
-				<div class="row">\
-					<div class="ten columns">\
-						<input type="text" kemo-type="message" class="message-box" onkeypress="{onMessageKeyPress}"/>\
+				<div class="fixed-panel content-panel">\
+				    <div class="row">\
+                        <div kemo-type="messages" class="messages-box">\
+                            <chat-line each={messages.items}></chat-line>\
+                        </div>\
 					</div>\
-					<div class="two columns">\
-						<button class="send-btn button-primary" kemo-type="send-btn" onclick="{onSendMessage}">Send</button>\
-					</div>\
+				</div>\
+				<div class="fixed-panel bottom-panel">\
+				    <div class="row">\
+                        <div class="ten columns">\
+                            <input type="text" kemo-type="message" class="message-box" onkeypress="{onMessageKeyPress}"/>\
+                        </div>\
+                        <div class="two columns">\
+                            <button class="send-btn button-primary" kemo-type="send-btn" onclick="{onSendMessage}">Send</button>\
+                        </div>\
+                    </div>\
 				</div>\
 			\</div>',
 					'', '', function(opts) {
@@ -47,7 +53,7 @@ var kemo = function(kemo) {
 						// Default encryption key
 						self.key = self.root.getAttribute("key");
 						// Max messages on screen
-						self.max_messages = 15;
+						self.max_messages = 100;
 						// Messages queue
 						self.messages = new util.MiniQueue(self.max_messages, {
 							empty : true

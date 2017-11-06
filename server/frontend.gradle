@@ -24,36 +24,13 @@ task buildFrontend(){
 				"minifyNormalizeCss",
 				"combineKemoCss",
 				"minifyKemoCss",
-				"minifyBigImgThemeCss",
-				"combineAllChatJs"
+				"minifyBigImgThemeCss"
 				]
 }
 
 // Clean production static resources
 task deleteProdResourcesTask(type: Delete) {
   delete = "${resProdDir}/"
-}
-
-// Chat page scripts
-task combineCustomChatJs(type: combineJs.class){
-	dependsOn = ['deleteProdResourcesTask']
-    source = [
-    		"${resDir}/js/kemo.core.js",
-    		"${resDir}/js/kemo.client.ext.js",
-    		"${resDir}/js/kemo.chat_page.js"
-    		]
-    dest = file("${buildDir}/resources/combine/chat.all.js")
-    include "*.js"
-}
-
-task minifyCustomChatJs(type:minifyJs.class){
-	dependsOn = ['combineCustomChatJs']
-	source = "${buildDir}/resources/combine/chat.all.js"
-	dest = "${buildDir}/resources/min/chat.all.min.js"
-    closure {
-    	compilationLevel = 'SIMPLE_OPTIMIZATIONS'
-        warningLevel = 'QUIET'
-    }
 }
 
 task combineAllChatJs(type: combineJs.class){
@@ -97,6 +74,7 @@ task combineKemoJs(type: combineJs.class){
 			"${resDir}/js/kemo.client.view.js",
 			"${resDir}/js/kemo.client.ext.js",
 			"${resDir}/js/kemo.client.js",
+			"${resDir}/js/kemo.chat_page.js",
     		]
     dest = "${buildDir}/resources/combine/kemo.all.js"
     include "*.js"

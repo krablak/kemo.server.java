@@ -26,8 +26,11 @@ var kemo = function(kemo) {
 		// Create communication API instance
 		var messaging = new comm.Messaging(chatUi.key);
 
+		// System notification extension
+        var sysNotifExt = new ext.SystemNotification();
+
 		// Title notification extension
-		var titleNotifExt = new ext.TitleNotification();
+   		var titleNotifExt = new ext.TitleNotification();
 
 		// Handle actions between communication and UI
 		messaging.connect(chatUi.key, function() {
@@ -51,10 +54,7 @@ var kemo = function(kemo) {
 				data : e
 			};
 			titleNotifExt.trigger('ui-received-new', propEvent);
-			// In case that exist parent window propagate event up
-			if (window.parent) {
-				window.parent.postMessage(propEvent, "*");
-			}
+			sysNotifExt.trigger('ui-received-new', e.data);
 		});
 		// On window focus inform parent window
 		window.addEventListener('focus', focusOnParent);
