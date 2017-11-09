@@ -26,6 +26,32 @@ var kemo = function(kemo) {
 		// Create communication API instance
 		var messaging = new comm.Messaging(chatUi.key);
 
+		// Helper instance of last known readyState
+		kemo.client.lastReadyState = -1
+
+		// Add messaging events handlers
+		messaging.onReadyStateFns.push(function(readyState){
+		    var stateMsg = "[";
+		    var curDate = new Date();
+		    stateMsg = stateMsg +  curDate.getHours() + ":" + curDate.getMinutes() + ":" + curDate.getSeconds() + "]";
+		    var msgEvent = { type:"info", message:"" };
+		    if(readyState === 0){
+                msgEvent.message = stateMsg + " Connecting...";
+		    }else if(readyState === 1){
+		        msgEvent.message = stateMsg + " Connected!";
+		    }else if(readyState === 2){
+		        msgEvent.type = "warn";
+                msgEvent.message = stateMsg + " Ups! Closing connection...";
+            }else if(readyState === 3){
+                msgEvent.type = "warn";
+                msgEvent.message = stateMsg + " Doh! Connection closed :(";
+            }
+            if(kemo.client.lastReadyState !== readyState){
+                chatUi.trigger('ui-system-received', msgEvent);
+            }
+            kemo.client.lastReadyState = readyState;
+		});
+
 		// System notification extension
         var sysNotifExt = new ext.SystemNotification();
 

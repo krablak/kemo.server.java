@@ -36,7 +36,7 @@ var kemo = function(kemo) {
 	ext.RandomNick = function() {
 	    var self = this;
         self.generate = function(){
-                var nicks = [ 'Greg', 'Dave', 'Robin', ':)', ';)', 'Sasha', 'Zim', 'Dude', '¯\_(ツ)_/¯','ಠ_ಠ','Kim','Chucpe','(._.)','Jesus','(^.*)','Hugo','uu5','Bilbo','Frodo','Gandalf','Smaug','Elrond','Gollum','Thorin','Fili','Kili','Balin','Dwalin','Oin','Gloin','Dori','Nori','Bifur','Bofur','Bombur','Beorn','Bard','Bert','Bolg','Golfimbul','Dain'];
+                var nicks = [ 'Greg', 'Gergely', 'Dave', 'Robin', 'Sasha', 'Zim', 'Dude','Kim','Chucpe','Jesus','Hugo','uu5','UMFIoTRCA','Bilbo','Frodo','Gandalf','Smaug','Elrond','Gollum','Thorin','Fili','Kili','Balin','Dwalin','Oin','Gloin','Dori','Nori','Bifur','Bofur','Bombur','Beorn','Bard','Bert','Bolg','Golfimbul','Dain'];
                 var randomNick = nicks[Math.floor(Math.random() * nicks.length)];
                 var usrNameFld = document.querySelector("input[kemo-type='username']");
                 if(usrNameFld){

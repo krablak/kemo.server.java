@@ -84,8 +84,26 @@ var kemo = function(kemo) {
 		var self = this;
 		// Messaging key
 		self.key = key;
-		// Websocket reference
+		// WebSocket reference
 		self.ws = null;
+
+		// Functions executed on changed connection state
+		self.onReadyStateFns = [];
+
+		var _executeOnFunctions = function(execFns, readyState){
+		    if(execFns && Array.isArray(execFns)){
+                for(var key in execFns){
+                    var fnObj = execFns[key];
+                    if(typeof(fnObj) === 'function'){
+                        try{
+                            fnObj(readyState);
+                        }catch(err){
+                            // Simple drown error and continue
+                        }
+                    }
+                }
+		    }
+		};
 
 		// Connect API to server websocket
 		self.connect = function(key, afterOnOpen) {
@@ -130,7 +148,8 @@ var kemo = function(kemo) {
 					if (afterOnOpen) {
 						afterOnOpen();
 					}
-				}
+					_executeOnFunctions(self.onReadyStateFns, self.ws.readyState);
+				};
 				// On error perform reconnect
 				self.ws.onerror = function(err) {
 					auditLog("ONERROR", self);
@@ -140,6 +159,7 @@ var kemo = function(kemo) {
 						message : "WebSocket connection error.",
 						error : err
 					});
+					_executeOnFunctions(self.onReadyStateFns, self.ws.readyState);
 				};
 			} catch (err) {
 				// Do not propagate up... silently fails.
@@ -193,6 +213,7 @@ var kemo = function(kemo) {
 					self.ws.close();
 					// On close try to connect to server again
 					self.ws.onclose = function() {
+					    _executeOnFunctions(self.onReadyStateFns, self.ws.readyState);
 						self.connect(self.key, null);
 					};
 				} else if (self.ws.readyState === WebSocket.CLOSING) {
@@ -202,10 +223,12 @@ var kemo = function(kemo) {
 					};
 					// On close try to connect to server again
 					self.ws.onclose = function() {
+					    _executeOnFunctions(self.onReadyStateFns, self.ws.readyState);
 						self.connect(self.key, null);
 					};
 				} else if (self.ws.readyState === WebSocket.CLOSED) {
 					auditLog("RECONNECT_CLOSED", self);
+					_executeOnFunctions(self.onDisconnectFns);
 					// Ok just create new connection
 					self.connect(self.key, null);
 				}

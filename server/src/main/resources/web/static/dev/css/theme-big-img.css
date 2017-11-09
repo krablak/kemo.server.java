@@ -96,6 +96,15 @@ input[type="email"], input[type="number"], input[type="search"], input[type="tex
 	color: #82828B;
 }
 
+.messages-box div.info {
+	color: #565695;
+}
+
+.messages-box div.warn {
+	color: #D46A6A;
+}
+
+
 input {
 	color: #333;
 }

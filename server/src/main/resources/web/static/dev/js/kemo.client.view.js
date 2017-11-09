@@ -163,7 +163,8 @@ var kemo = function(kemo) {
 							// Update data model
 							self.messages.add({
 								sent : isSentMessage,
-								message : e
+								message : e,
+								type : "message"
 							});
 
 							// Update component
@@ -179,10 +180,33 @@ var kemo = function(kemo) {
 							}
 						});
 
+						// Called on received system message
+                        self.on('ui-system-received', function(e) {
+                            var message = e;
+                            var type = "info";
+                            if(typeof(e) === 'object'){
+                                message = e.message;
+                                type = e.type;
+                            }
+                            // Update data model
+                            self.messages.add({
+                                type : type,
+                                sent : false,
+                                message : message
+                            });
+                            // Update component
+                            self.update();
+
+                            // Scroll to messages box bottom
+                            self.messagesDiv.scrollTop = self.messagesDiv.scrollHeight;
+                        });
+
 					}, '{ }');
 
 	riot.tag('chat-line', '\
-			<div if={!empty} class="{sent: sent}">{message}</div>\
+	        <div if={type=="info"} class="{ type }">{message}</div>\
+	        <div if={type=="warn"} class="{ type }">{message}</div>\
+			<div if={type=="message"} class="{sent: sent}">{message}</div>\
 			<div if={empty} >&nbsp;</div>\
 			', '', '', function(opts) {
 	}, '{ }');
