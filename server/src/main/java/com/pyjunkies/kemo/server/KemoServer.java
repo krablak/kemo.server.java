@@ -102,22 +102,15 @@ public class KemoServer {
         // Add global security headers
         deploymentInfo.addInitialHandlerChainWrapper(addHeaders((exchange) -> {
             if (isProductionMode) {
-                // TODO Security headers are disabled due to possible cause of
-                // our connectivity issues
-                /*
-                 * exchange.getResponseHeaders().add(Constants.ResponseHeader.
-				 * CONTENT_SECURITY_POLICY,
-				 * "default-src 'self' 'unsafe-eval' https://kemoundertow-krablak.rhcloud.com/; "
-				 * +
-				 * "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; "
-				 * +
-				 * "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; "
-				 * +
-				 * "connect-src 'self' ws://kemoundertow-krablak.rhcloud.com wss://kemoundertow-krablak.rhcloud.com:8443;"
-				 * );
-				 * exchange.getResponseHeaders().add(Constants.ResponseHeader.
-				 * HSTS, "max-age=31536000");
-				 */
+                String connectSrc = bindAddress + ":" + port;
+                exchange.getResponseHeaders().add(Constants.ResponseHeader.CONTENT_SECURITY_POLICY,
+                        format("default-src 'self' 'unsafe-eval' https://%s:%s; ", bindAddress, port)
+                                + "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; "
+                                + "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; "
+                                + format("connect-src 'self' ws://%s:%s wss://%s:%s wss://kemo.rocks;", bindAddress, port, bindAddress, sslConfiguration.isSslConfigured() ? sslConfiguration.getSslPortOpt().get() : port)
+                );
+
+                exchange.getResponseHeaders().add(Constants.ResponseHeader.HSTS, "max-age=31536000");
             } else {
 
                 exchange.getResponseHeaders().add(Constants.ResponseHeader.CONTENT_SECURITY_POLICY,
