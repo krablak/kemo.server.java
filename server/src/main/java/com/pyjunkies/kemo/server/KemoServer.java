@@ -112,7 +112,6 @@ public class KemoServer {
 
                 exchange.getResponseHeaders().add(Constants.ResponseHeader.HSTS, "max-age=31536000");
             } else {
-
                 exchange.getResponseHeaders().add(Constants.ResponseHeader.CONTENT_SECURITY_POLICY,
                         "default-src 'self' 'unsafe-eval'; "
                                 + "img-src 'self'; "

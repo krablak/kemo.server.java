@@ -46,12 +46,13 @@ task combineAllChatJs(type: combineJs.class){
 // Chat page scripts
 task combineAllJs(type: combineJs.class){
 	dependsOn = ['deleteProdResourcesTask','minifyKemoJs']
-    source = [
-    		"${resDir}/js/thirdparty/forge/forge.min.js",
-    		"${resDir}/js/thirdparty/riot/riot.min.js",
-    		"${buildDir}/resources/min/kemo.all.min.js"
-    		]
-    dest = file("${resProdDir}/js/all.min.js")
+	source = [
+			"${resDir}/js/thirdparty/forge/forge.min.js",
+			"${resDir}/js/thirdparty/jsopt/jsOTP.min.js",
+			"${resDir}/js/thirdparty/riot/riot.min.js",
+			"${buildDir}/resources/min/kemo.all.min.js"
+	]
+	dest = file("${resProdDir}/js/all.min.js")
     include "*.js"
 }
 

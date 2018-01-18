@@ -122,5 +122,42 @@ var kemo = function(kemo) {
 		return self;
 	};
 
+    // Provides support for creating TOPT passwords
+    ext.TOPT = function() {
+        var self = this;
+        self.command = "/topt";
+
+        // TOPT generator configured for 30 minutes and generating code of 8 numbers
+        self.topt = new jsOTP.totp(60*30,8);
+
+        // Generates new code according to given string input
+        self.generate = function(keyStr){
+            // Add some pepper to eliminate short codes
+            var pepperedKeyStr = "diversity" + keyStr + "pepper";
+            var failCounter = 0;
+            while(self.topt.base32tohex(pepperedKeyStr).length % 2 !== 0 && failCounter <= 50){
+                pepperedKeyStr = pepperedKeyStr + "0";
+                failCounter++;
+            }
+            if(failCounter>50){
+                return "Generating failed!";
+            }else{
+                return self.topt.getOtp(pepperedKeyStr);
+            }
+
+        };
+
+        self.tryProcess = function(msgStr) {
+            var result = null;
+            if(msgStr && msgStr.indexOf(self.command) != -1){
+                var keyStr = msgStr.substring(msgStr.indexOf(self.command)+self.command.length+1, msgStr.length);
+                return self.generate(keyStr);
+            }
+            return result;
+        };
+
+        return self;
+    };
+
 	return kemo;
 }(kemo || {});

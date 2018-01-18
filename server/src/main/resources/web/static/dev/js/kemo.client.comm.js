@@ -49,7 +49,7 @@ var kemo = function(kemo) {
 	var resolveUrl = function(key) {
 		var host = "";
 		if (location.protocol === "http:") {
-			host = "ws://" + location.host + ":" + location.port;
+			host = "ws://" + location.hostname + ":" + location.port;
 		} else {
 			host = "wss://" + location.hostname  + ":" + location.port;
 		}
@@ -178,7 +178,7 @@ var kemo = function(kemo) {
 
 		// Sends message
 		self.send = function(key, message) {
-			if (self.ws.readyState !== WebSocket.OPEN || self.key !== key) {
+			if (self.ws === null || self.ws.readyState !== WebSocket.OPEN || self.key !== key) {
 				auditLog("SEND_NEEDCONNECT", self);
 				self.connect(key, function() {
 					self.ws.send(encrypt(key, message));

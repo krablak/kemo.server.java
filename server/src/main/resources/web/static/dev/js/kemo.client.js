@@ -58,6 +58,9 @@ var kemo = function(kemo) {
 		// Title notification extension
    		var titleNotifExt = new ext.TitleNotification();
 
+        // TOPT generator extension
+   		var toptExt = new ext.TOPT();
+
 		// Handle actions between communication and UI
 		messaging.connect(chatUi.key, function() {
 			chatUi.trigger('update');
@@ -66,7 +69,12 @@ var kemo = function(kemo) {
 			chatUi.trigger('ui-received', message);
 		};
 		kemo.client.on('messaging-send', function(e) {
-			messaging.send(e.key, e.message);
+			var toptExtRes = toptExt.tryProcess(e.message);
+            if(toptExtRes !== null){
+                chatUi.trigger('ui-system-received', {type:"warn", message: "TOPT code: "+toptExtRes});
+            } else {
+                messaging.send(e.key, e.message);
+            }
 		});
 		kemo.client.on('ui-key-changed', function(key) {
 			messaging.connect(key);
